@@ -4,7 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style id="distill-article-specific-styles">
-    <%=require("../static/styles.css") %>
+    .subgrid {
+  grid-column: screen; 
+  display: grid; 
+  grid-template-columns: inherit;
+  grid-template-rows: inherit;
+  grid-column-gap: inherit;
+  grid-row-gap: inherit;
+}
+
+d-figure.base-grid {
+  grid-column: screen;
+  background: hsl(0, 0%, 97%);
+  padding: 20px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+d-figure {
+  margin-bottom: 1em;
+  position: relative;
+}
+
+d-figure > figure {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.shaded-figure {
+  background-color: hsl(0, 0%, 97%);
+  border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+  border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+  padding: 30px 0;
+}
+
+.pointer {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  top: 26px;
+  left: -48px;
+}
+
   </style>
   <script src="https://distill.pub/template.v2.js"></script>
 </head>
@@ -13,7 +54,32 @@
 
   <d-front-matter>
     <script type="text/json">
-      <%= JSON.stringify(require("./frontmatter.json"), null, 4) %>
+      {
+    "title": "Poisoning Attacks and Subpopulation Susceptibility",
+    "description": "Experiments on subpopulations vulnerable to poisoning attacks",
+    "authors": [
+        {
+            "author": "Evan Rose",
+            "affiliation": "University of Virginia",
+            "authorURL": "",
+            "affiliationURL": "https://engineering.virginia.edu/departments/computer-science"
+        }
+    ],
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
     </script>
   </d-front-matter>
 
@@ -432,4 +498,4 @@
   <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
   <d-bibliography src="bibliography.bib"></d-bibliography>
 
-</body>
+<script type="text/javascript" src="index.bundle.js"></script></body>
