@@ -1,6 +1,6 @@
 .subgrid {
-  grid-column: screen; 
-  display: grid; 
+  grid-column: screen;
+  display: grid;
   grid-template-columns: inherit;
   grid-template-rows: inherit;
   grid-column-gap: inherit;
@@ -22,7 +22,14 @@ d-figure {
 
 d-figure > figure {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 20;
+}
+
+d-figure.attackAnim {
+  grid-column: text;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .shaded-figure {
@@ -38,4 +45,112 @@ d-figure > figure {
   height: 26px;
   top: 26px;
   left: -48px;
+}
+
+.blue-point {
+  fill: steelblue;
+  opacity: 0.6;
+  r: 4;
+}
+
+.red-point {
+  fill: orangered;
+  opacity: 0.6;
+  r: 4;
+}
+
+.target-point {
+  fill: orange;
+  opacity: 1;
+  r: 5;
+}
+
+.selected-point {
+  fill: orange;
+  opacity: 0.5;
+  r: 5;
+}
+
+.blue-poison {
+  fill: steelblue;
+  /* r: 5; */
+}
+
+.red-poison {
+  fill: orangered;
+  /* r: 5; */
+}
+
+.area-blue {
+  fill: lightsteelblue;
+  opacity: 0.4;
+  stroke-width: 0;
+}
+
+.area-red {
+  fill: red;
+  opacity: 0.2;
+  stroke-width: 0;
+}
+
+.overlay {
+  position: absolute;
+}
+
+.slider {
+  position: absolute;
+  -webkit-appearance: none;
+  grid-column: middle;
+  height: 16px;
+  border-radius: 2px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-animation: 0.2s;
+  transform: opacity 0.2s;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 32px;
+  border-radius: 25%;
+  background: #3d3d3d;
+  cursor: pointer;
+}
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 32px;
+  border-radius: 25%;
+  background: #3d3d3d;
+  cursor: pointer;
+}
+
+.attackSlider {
+  left: 80px;
+  width: calc(100% - 80px - 80px);
+  top: calc(100%);
+}
+
+.play-button {
+  position: absolute;
+  height: 24px;
+  top: calc(100% - 2px);
+  left: 50px;
+  opacity: 0.7;
+  background-color: #d3d3d3;
+  border-radius: 8px;
+  display: block;
+  align-items: center;
+}
+
+.poison-counter {
+  position: absolute;
+  height: 24px;
+  top: calc(100% - 40px);
+  margin: auto;
+}
+
+.tick line {
+  visibility: hidden;
 }
