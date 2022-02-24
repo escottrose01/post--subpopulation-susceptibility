@@ -32,6 +32,38 @@ d-figure.attackAnim {
   margin-right: auto;
 }
 
+d-figure.poison-demo {
+  position: relative;
+  grid-column: text;
+  display: block;
+  width: 984px;
+  height: 550;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.poison-demo-controls {
+  position: absolute;
+  width: 454px;
+  height: 150px;
+  left: 20px;
+  top: 335px;
+}
+
+.poison-demo-controls-textbox {
+  position: absolute;
+  width: calc(100% - 200px + 10px);
+  height: 100%;
+  pointer-events: none;
+}
+
+.poison-demo-controls-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+  text-anchor: middle;
+}
+
 .shaded-figure {
   background-color: hsl(0, 0%, 97%);
   border-top: 1px solid hsla(0, 0%, 0%, 0.1);
@@ -55,7 +87,7 @@ d-figure.attackAnim {
 
 .red-point {
   fill: orangered;
-  opacity: 0.6;
+  opacity: 0.7;
   r: 4;
 }
 
@@ -99,17 +131,23 @@ d-figure.attackAnim {
 
 .slider {
   position: absolute;
+  border-radius: 2px;
   -webkit-appearance: none;
   grid-column: middle;
+}
+
+.attack-slider {
   height: 16px;
-  border-radius: 2px;
   background: #d3d3d3;
   outline: none;
   opacity: 0.7;
   -webkit-animation: 0.2s;
   transform: opacity 0.2s;
+  left: 80px;
+  width: calc(100% - 80px - 80px);
+  top: calc(100%);
 }
-.slider::-webkit-slider-thumb {
+.attack-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 16px;
@@ -118,7 +156,7 @@ d-figure.attackAnim {
   background: #3d3d3d;
   cursor: pointer;
 }
-.slider::-moz-range-thumb {
+.attack-slider::-moz-range-thumb {
   width: 16px;
   height: 32px;
   border-radius: 25%;
@@ -126,22 +164,69 @@ d-figure.attackAnim {
   cursor: pointer;
 }
 
-.attackSlider {
-  left: 80px;
-  width: calc(100% - 80px - 80px);
-  top: calc(100%);
+.control-slider {
+  width: calc(100% - 200px);
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  opacity: 0.7;
+}
+/* .control-slider::-ms-track {
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+} */
+.control-slider::-webkit-slider-runnable-track {
+  height: 6.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #808080, 0px 0px 1px #b0b0b0;
+  background: #d3d3d3;
+  border-radius: 18px;
+  border: 0.1px solid #a0a0a0;
+}
+.control-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 40%;
+  background: #3d3d3d;
+  cursor: pointer;
+  margin-top: calc(0.5 * (6.4px - 16px));
+}
+.control-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 45%;
+  background-color: #3d3d3d;
+  cursor: pointer;
 }
 
-.play-button {
+.button {
   position: absolute;
   height: 24px;
-  top: calc(100% - 2px);
-  left: 50px;
   opacity: 0.7;
   background-color: #d3d3d3;
   border-radius: 8px;
   display: block;
   align-items: center;
+}
+
+.play-button {
+  top: calc(100% - 2px);
+  left: 50px;
+}
+
+.step-forward-button {
+  top: calc(100% - 2px);
+  right: calc(50px - 2.5px);
+}
+
+.step-back-button {
+  top: calc(100% - 2px);
+  left: calc(50px - 32px);
 }
 
 .poison-counter {
