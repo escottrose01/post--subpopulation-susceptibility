@@ -4,17 +4,18 @@
 
   export let initSpIndex;
   export let data;
+  export let fID;
 
   let canvas;
   let svg;
   let slider;
   let playButton;
+  let stepForwardButton, stepBackButton;
 
   let sp_index = initSpIndex;
   let hover_index = -1;
   let poisonIndex = 0;
   let poisons = [];
-  let poisonedData = [];
   let nPoisons = data.attacks[sp_index].poisons.length;
   let framerate = Math.max(Math.min(15, parseInt((nPoisons + 1) / 10)), 1);
   let isPlaying = true;
@@ -25,6 +26,8 @@
 
   const playPath = "M 0 0 L 10 5 L 0 10 Z";
   const pausePath = "M 0 0 L 0 10 L 3 10 L 3 0 Z M 6 0 L 6 10 L 9 10 L 9 0 Z";
+  const stepForwardPath = "M 0 0 L 3 0 L 9 5 L 3 10 L 0 10 L 0 10 L 6 5 L 0 0";
+  const stepBackPath = "M 9 0 L 6 0 L 0 5 L 6 10 L 9 10 L 9 10 L 3 5 L 9 0";
 
   const render = () => {
     let dset = data.dset;
@@ -71,6 +74,12 @@
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    const poisonG = d3
+      .select(svg)
+      .attr("pointer-events", "none")
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
     const modelG = d3
       .select(svg)
       .attr("pointer-events", "none")
@@ -94,7 +103,7 @@
 
     modelG
       .append("clipPath")
-      .attr("id", "rect-clip")
+      .attr("id", `rect-clip${fID}`)
       .append("rect")
       .attr("x", 0)
       .attr("y", 0)
@@ -105,27 +114,37 @@
       .append("line")
       .style("stroke", "darkgray")
       .style("stroke-width", 5)
-      .attr("clip-path", "url(#rect-clip)");
+      .attr("clip-path", `url(#rect-clip${fID})`);
 
     const model_t = modelG
       .append("line")
       .style("stroke", "black")
       .style("stroke-width", 5)
-      .attr("clip-path", "url(#rect-clip)");
+      .attr("clip-path", `url(#rect-clip${fID})`);
 
     const belowArea = shadingG
       .append("path")
-      .attr("clip-path", "url(#rect-clip)");
+      .attr("clip-path", `url(#rect-clip${fID})`);
 
     const aboveArea = shadingG
       .append("path")
-      .attr("clip-path", "url(#rect-clip)");
+      .attr("clip-path", `url(#rect-clip${fID})`);
 
-    let circles;
+    let dsetScatter = dsetG
+      .selectAll("circle")
+      .data(dset)
+      .enter()
+      .append("circle")
+      .attr("class", getClass)
+      .attr("cx", (d) => xScale(xValue(d)))
+      .attr("cy", (d) => yScale(yValue(d)));
+
+    let poisonScatter = poisonG.selectAll("path");
 
     //--- figure interaction control ---//
     const updateClasses = () => {
-      circles.attr("class", (d) => getClass(d));
+      poisonScatter.attr("class", getClass);
+      dsetScatter.attr("class", getClass);
     };
 
     const resetSlider = () => {
@@ -180,21 +199,32 @@
     };
 
     const updateData = () => {
-      poisonedData = dset.concat(poisons);
-      poisonedData.forEach((e, i) => (e.id = i.toString()));
-      circles = dsetG.selectAll("circle").data(poisonedData, (d) => d.id);
+      poisons.forEach((e, i) => (e.id = i.toString()));
+      poisonScatter = poisonG.selectAll("path").data(poisons, (d) => d.id);
 
-      circles
+      poisonScatter
         .enter()
-        .append("circle")
+        .append("path")
         .attr("class", (d) => getClass(d))
-        .attr("cx", (d) => xScale(xValue(d)))
-        .attr("cy", (d) => yScale(yValue(d)))
+        .attr("d", d3.symbol().type(d3.symbolCross).size(600))
+        .attr(
+          "transform",
+          (d) => `translate(${xScale(xValue(d))},${yScale(yValue(d))})`
+        )
+        // .attr("cx", (d) => xScale(xValue(d)))
+        // .attr("cy", (d) => yScale(yValue(d)));
         .transition()
         .duration(isPlaying ? 200 : 200)
-        .attrTween("r", () => d3.interpolateNumber(10, 5));
+        .attr("d", d3.symbol().type(d3.symbolCross).size(200));
+      // .transition()
+      // .duration(500)
+      // .attr(
+      //   "transform",
+      //   (d) =>
+      //     `translate(${xScale(xValue(d))},${yScale(yValue(d))})rotate(-45)`
+      // );
 
-      circles.exit().remove();
+      poisonScatter.exit().remove();
     };
 
     const mousemoveHandler = (event) => {
@@ -243,7 +273,15 @@
       .attr("max", nPoisons)
       .on("input", () => sliderHandler(true));
 
-    d3.select(playButton).on("click", () => pause());
+    d3.select(playButton).on("click", pause);
+    d3.select(stepForwardButton).on("click", () => {
+      slider.value = Math.min(+slider.value + 1, nPoisons);
+      sliderHandler(true);
+    });
+    d3.select(stepBackButton).on("click", () => {
+      slider.value = Math.max(+slider.value - 1, 0);
+      sliderHandler(true);
+    });
 
     updateData();
     updateData(); // probably a bug somewhere, but need to do this twice for highlighting subpops to work for some reason
@@ -263,15 +301,37 @@
   ></svg
 >
 <canvas bind:this={canvas} {width} {height} />
-<button bind:this={playButton} class="play-button" style="cursor: pointer">
+<button
+  bind:this={playButton}
+  class="button play-button"
+  style="cursor: pointer"
+>
   <svg width="10" height="10" viewBox="0 0 10 10">
     <path d={pausePath} fill="#888" />
+  </svg>
+</button>
+<button
+  bind:this={stepForwardButton}
+  class="button step-forward-button"
+  style="cursor: pointer"
+>
+  <svg width="10" height="10" viewBox="0 0 10 10">
+    <path d={stepForwardPath} fill="#888" />
+  </svg>
+</button>
+<button
+  bind:this={stepBackButton}
+  class="button step-back-button"
+  style="cursor: pointer"
+>
+  <svg width="10" height="10" viewBox="0 0 10 10">
+    <path d={stepBackPath} fill="#888" />
   </svg>
 </button>
 <input
   bind:this={slider}
   type="range"
-  class="slider attackSlider"
+  class="slider attack-slider"
   min="0"
   max="1"
   value="0"

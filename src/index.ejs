@@ -23,24 +23,49 @@
     <p>Experiments on subpopulations vulnerable to poisoning attacks.</p>
   </d-title>
 
-  <figure style="position: relative; margin: auto; width: 984px; height: 425px">
+  <d-figure id="svelte-poison-demo-dfigure" class="poison-demo">
+    <figure>
+      <div id="svelte-demo-target" style="text-align: center"></div>
+      <div id="svelte-demo-controls" class="poison-demo-controls">
+        <input id="alphaSlider" style="top:15px;" type="range" class="slider control-slider" min="0" max="12" value="4"/>
+        <input id="betaSlider" style="top:69px;" type="range" class="slider control-slider" min="0" max="10" value="0"/>
+        <input id="seedSlider" style="top:119px;" type="range" class="slider control-slider" min="1" max="10" value="0"/>
+        <svg class="overlay poison-demo-controls-textbox">
+          <text id="alphaText" x="50%" y="10" class="poison-demo-controls-text">
+            Class Separation α = 1.00
+          </text>
+          <text id="betaText" x="50%" y="64" class="poison-demo-controls-text">
+            Random Label Fraction β = 0.00
+          </text>
+          <text id="seedText" x="50%" y="114" class="poison-demo-controls-text">
+            Dataset Seed s = 1
+          </text>
+        </svg>
+      </div>
+      <figcaption style="position:absolute; width: 474px; top:335px; left:494px">
+        Machine learning is susceptible to poisoning attacks where adversaries inject poisoned training data into the training set, usually to induce specific model behavior. When attackers focus their efforts towards subpopulations of the data distribution, which subpopulations are the most vulnerable to an attack?
+      <figcaption>
+    </figure>
+  </d-figure>
+
+  <!-- <figure style="position: relative; margin: auto; width: 984px; height: 425px">
     <div id="demo" style="position:relative; height:300px; border: 1px solid rgba(0, 0, 0, 0.2); background-color: rgba(0, 0, 0, 0.2); text-align: center">Interactive attack demo: the reader can generate datasets using the same parameters used in the experiments, create subpopulations, and try to manually add poisons to achieve the objective</div>
     <svg id="actualdemo"></svg>
     <div id="controls" style="position: absolute; width: 300px; height: 50px; left: 20px; top: 320px">
       <div><p id="slider-value"></p></div>
       <div><div id="slider"></div></div>
-      <!-- <text class="figtext" style="top: -5px; left: 20px; position: relative;">Demo Controls here?</text> -->
+      <text class="figtext" style="top: -5px; left: 20px; position: relative;">Demo Controls here?</text>
     </div>
-    <!-- <div id="sliderAlpha" style="position: absolute; width: 300px; height: 50px; left: 20px; top: 320px">
+    <div id="sliderAlpha" style="position: absolute; width: 300px; height: 50px; left: 20px; top: 320px">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Class Separation $d = 1.0$</text>
     </div>
     <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 280px; top: 320px;;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Label Noise $p = 0.2$</text>
-    </div> -->
+    </div>
     <figcaption id="democaption" style="position:absolute; width: 500px; top: 320px; left: 484px">
       Machine learning is susceptible to poisoning attacks where adversaries inject poisoned training data into the training set, usually to induce specific model behavior. When attackers focus their efforts towards subpopulations of the data distribution, which subpopulations are the most vulnerable to an attack?
     </figcaption>
-  </figure>
+  </figure> -->
 
   <d-article>
     <p>
