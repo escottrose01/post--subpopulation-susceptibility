@@ -141,6 +141,8 @@
 
     let poisonScatter = poisonG.selectAll("path");
 
+    const delaunay = d3.Delaunay.from(data.cluster_centers);
+
     //--- figure interaction control ---//
     const updateClasses = () => {
       poisonScatter.attr("class", getClass);
@@ -231,11 +233,9 @@
       let [x, y] = d3.pointer(event);
       (x -= margin.left), (y -= margin.top);
       [x, y] = [xScale.invert(x), yScale.invert(y)];
-      let d;
-      [d, hover_index] = data.cluster_centers
-        .map((p, i) => [sqrdist(p, [x, y]), i])
-        .reduce((prev, cur) => (cur[0] < prev[0] ? cur : prev));
-      if (d > 0.05) hover_index = -1;
+      hover_index = delaunay.find(x, y, sp_index);
+      if (sqrdist(data.cluster_centers[hover_index], [x, y]) > 0.05)
+        hover_index = -1;
       updateClasses();
     };
 
@@ -273,7 +273,7 @@
       .attr("max", nPoisons)
       .on("input", () => sliderHandler(true));
 
-    d3.select(playButton).on("click", pause);
+    d3.select(playButton).on("click", () => pause());
     d3.select(stepForwardButton).on("click", () => {
       slider.value = Math.min(+slider.value + 1, nPoisons);
       sliderHandler(true);

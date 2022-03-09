@@ -107,7 +107,7 @@ let fID = 0;
   const figure = document.getElementById("svelte-scatterplot-dfigure-example5");
   let scatterplot;
   figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/data/2.00-0.0-4.json")
+    fetch("https://escottrose01.github.io/poisoning-data/2.00-0.0-4.json")
       .then((resp) => resp.json())
       .then((dataJson) => {
         const target = figure.querySelector("#svelte-scatterplot-target");
