@@ -2,6 +2,9 @@
 // import * as _unused from "raw-loader!./index.ejs";
 // TODO: disable before publishing
 
+import "regenerator-runtime/runtime";
+import "core-js/stable";
+
 import AttackAnimation from "./diagrams/attack-animation.svelte";
 import PoisonDemo from "./diagrams/poisoning-demo.svelte";
 

@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  // import { SVM } from "libsvm-js";
   import { make_classification, getModelShape } from "../util.js";
+  import { SVM } from "../svm.js";
 
   export let fID;
   export let controls;
@@ -22,7 +22,8 @@
   const n_samples = 128;
 
   let dset = make_classification(n_samples, flip_y, class_sep, seed);
-  let svm;
+  let svmClean = new SVM();
+  let svm = new SVM();
   let sp_index = 0;
   let hover_index = -1;
   let action = "add";
@@ -173,31 +174,46 @@
       poisonScatter = poisonG.selectAll("path").data(poisons).exit().remove();
     };
 
-    // const updateModels = () => {
-    //   let modelShape;
-    //   let theta_c = data.attacks[sp_index].im_models[0];
-    //   let theta_t = data.attacks[sp_index].im_models[poisonIndex];
+    const updateModels = () => {
+      let modelShape;
+      let theta_c = svmClean.parameters;
+      let theta_t = svm.parameters;
 
-    //   modelShape = getModelShape(theta_c, extentX, extentY);
-    //   model_c
-    //     .attr("x1", xScale(modelShape.boundary[0][0]))
-    //     .attr("x2", xScale(modelShape.boundary[1][0]))
-    //     .attr("y1", yScale(modelShape.boundary[0][1]))
-    //     .attr("y2", yScale(modelShape.boundary[1][1]));
+      modelShape = getModelShape(theta_c, extentXPad, extentYPad);
+      model_c
+        .attr("x1", xScale(modelShape.boundary[0][0]))
+        .attr("x2", xScale(modelShape.boundary[1][0]))
+        .attr("y1", yScale(modelShape.boundary[0][1]))
+        .attr("y2", yScale(modelShape.boundary[1][1]));
 
-    //   modelShape = getModelShape(theta_t, extentX, extentY);
-    //   model_t
-    //     .attr("x1", xScale(modelShape.boundary[0][0]))
-    //     .attr("x2", xScale(modelShape.boundary[1][0]))
-    //     .attr("y1", yScale(modelShape.boundary[0][1]))
-    //     .attr("y2", yScale(modelShape.boundary[1][1]));
-    //   belowArea
-    //     .attr("d", line(modelShape.below))
-    //     .attr("class", theta_t[1] < 0 ? "area-blue" : "area-red");
-    //   aboveArea
-    //     .attr("d", line(modelShape.above))
-    //     .attr("class", theta_t[1] < 0 ? "area-red" : "area-blue");
-    // };
+      modelShape = getModelShape(theta_t, extentXPad, extentYPad);
+      model_t
+        .attr("x1", xScale(modelShape.boundary[0][0]))
+        .attr("x2", xScale(modelShape.boundary[1][0]))
+        .attr("y1", yScale(modelShape.boundary[0][1]))
+        .attr("y2", yScale(modelShape.boundary[1][1]));
+      belowArea
+        .attr("d", line(modelShape.below))
+        .attr("class", theta_t[1] < 0 ? "area-blue" : "area-red");
+      aboveArea
+        .attr("d", line(modelShape.above))
+        .attr("class", theta_t[1] < 0 ? "area-red" : "area-blue");
+    };
+
+    const retrainModels = (retrainClean) => {
+      let data = dset.concat(poisons);
+      if (retrainClean)
+        svmClean.fitGD(
+          dset.map((d) => d.x),
+          dset.map((d) => d.y),
+          updateModels
+        );
+      svm.fitGD(
+        data.map((d) => d.x),
+        data.map((d) => d.y),
+        updateModels
+      );
+    };
 
     const mousemoveHandler = (event) => {
       let [x, y] = d3.pointer(event);
@@ -272,11 +288,11 @@
                 "transform",
                 (d) => `translate(${xScale(xValue(d))},${yScale(yValue(d))})`
               );
+
+            retrainModels(false);
           }
           break;
       }
-
-      console.log(poisons);
     };
 
     const mouseoutHandler = (event) => {
@@ -315,7 +331,8 @@
           break;
       }
       regenerateDataset();
-      // resetPoisons();
+      resetPoisons();
+      retrainModels(true);
     };
 
     d3.select(canvas)
@@ -326,6 +343,8 @@
     alphaSlider.on("input", () => sliderHandler("alpha"));
     betaSlider.on("input", () => sliderHandler("beta"));
     seedSlider.on("change", () => sliderHandler("seed"));
+
+    retrainModels(true);
   };
 
   onMount(() => {
