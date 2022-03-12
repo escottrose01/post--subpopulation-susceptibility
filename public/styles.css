@@ -50,18 +50,14 @@ d-figure.poison-demo {
   top: 335px;
 }
 
-.poison-demo-controls-textbox {
+.poison-demo-controls-text {
   position: absolute;
   width: calc(100% - 200px + 10px);
-  height: 100%;
-  pointer-events: none;
-}
-
-.poison-demo-controls-text {
   font-family: Arial, Helvetica, sans-serif;
   font-size: small;
   font-weight: bold;
   text-anchor: middle;
+  pointer-events: none;
 }
 
 .shaded-figure {
@@ -169,15 +165,21 @@ d-figure.poison-demo {
   height: 16px;
   padding: 0;
   margin: 0;
+  top: 24px;
   opacity: 0.7;
 }
-/* .control-slider::-ms-track {
+
+.slider-container {
+  position: absolute;
   width: 100%;
-  cursor: pointer;
-  background: transparent;
-  border-color: transparent;
-  color: transparent;
-} */
+}
+
+.mode-container {
+  position: absolute;
+  width: 180px;
+  left: calc(100% - 180px);
+}
+
 .control-slider::-webkit-slider-runnable-track {
   height: 6.4px;
   cursor: pointer;
@@ -229,6 +231,18 @@ d-figure.poison-demo {
   left: calc(50px - 32px);
 }
 
+.control-button {
+  position: relative;
+  margin-right: 7.5px;
+  width: auto;
+  min-width: 40px;
+  height: 48px;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+}
+
 .poison-counter {
   position: absolute;
   height: 24px;
@@ -238,4 +252,78 @@ d-figure.poison-demo {
 
 .tick line {
   visibility: hidden;
+}
+
+.input-container {
+  position: absolute;
+}
+
+.input {
+  position: absolute;
+  border: 0;
+  border-bottom: 2px solid #aaa;
+  background: transparent;
+}
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+.input:focus {
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #222;
+}
+
+.seed-label {
+  position: absolute;
+  left: calc(100% - 200px - 100px);
+  top: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  color: #808080;
+  pointer-events: none;
+  transition: all 0.5s ease-in-out;
+}
+
+.mode-label {
+  position: absolute;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+}
+
+.seed-textfield {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  left: calc(100% - 200px - 100px);
+  width: 100px;
+}
+
+.seed-button {
+  left: calc(100% - 200px - 100px - 150px - 10px);
+  width: 150px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.seed-container {
+  position: absolute;
+  width: 100%;
+}
+
+.demo-buttons-container {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  left: calc(100% - 180px);
+  top: 32px;
+  width: calc(100% - 180px);
+  height: calc(100% - 32px);
 }

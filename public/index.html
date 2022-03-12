@@ -56,18 +56,14 @@ d-figure.poison-demo {
   top: 335px;
 }
 
-.poison-demo-controls-textbox {
+.poison-demo-controls-text {
   position: absolute;
   width: calc(100% - 200px + 10px);
-  height: 100%;
-  pointer-events: none;
-}
-
-.poison-demo-controls-text {
   font-family: Arial, Helvetica, sans-serif;
   font-size: small;
   font-weight: bold;
   text-anchor: middle;
+  pointer-events: none;
 }
 
 .shaded-figure {
@@ -175,15 +171,21 @@ d-figure.poison-demo {
   height: 16px;
   padding: 0;
   margin: 0;
+  top: 24px;
   opacity: 0.7;
 }
-/* .control-slider::-ms-track {
+
+.slider-container {
+  position: absolute;
   width: 100%;
-  cursor: pointer;
-  background: transparent;
-  border-color: transparent;
-  color: transparent;
-} */
+}
+
+.mode-container {
+  position: absolute;
+  width: 180px;
+  left: calc(100% - 180px);
+}
+
 .control-slider::-webkit-slider-runnable-track {
   height: 6.4px;
   cursor: pointer;
@@ -235,6 +237,18 @@ d-figure.poison-demo {
   left: calc(50px - 32px);
 }
 
+.control-button {
+  position: relative;
+  margin-right: 7.5px;
+  width: auto;
+  min-width: 40px;
+  height: 48px;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+}
+
 .poison-counter {
   position: absolute;
   height: 24px;
@@ -244,6 +258,80 @@ d-figure.poison-demo {
 
 .tick line {
   visibility: hidden;
+}
+
+.input-container {
+  position: absolute;
+}
+
+.input {
+  position: absolute;
+  border: 0;
+  border-bottom: 2px solid #aaa;
+  background: transparent;
+}
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+.input:focus {
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #222;
+}
+
+.seed-label {
+  position: absolute;
+  left: calc(100% - 200px - 100px);
+  top: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  color: #808080;
+  pointer-events: none;
+  transition: all 0.5s ease-in-out;
+}
+
+.mode-label {
+  position: absolute;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+}
+
+.seed-textfield {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  left: calc(100% - 200px - 100px);
+  width: 100px;
+}
+
+.seed-button {
+  left: calc(100% - 200px - 100px - 150px - 10px);
+  width: 150px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.seed-container {
+  position: absolute;
+  width: 100%;
+}
+
+.demo-buttons-container {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  left: calc(100% - 180px);
+  top: 32px;
+  width: calc(100% - 180px);
+  height: calc(100% - 32px);
 }
 
   </style>
@@ -293,45 +381,57 @@ d-figure.poison-demo {
     <figure>
       <div id="svelte-demo-target" style="text-align: center"></div>
       <div id="svelte-demo-controls" class="poison-demo-controls">
-        <input id="alphaSlider" style="top:15px;" type="range" class="slider control-slider" min="0" max="12" value="4"/>
-        <input id="betaSlider" style="top:69px;" type="range" class="slider control-slider" min="0" max="10" value="0"/>
-        <input id="seedSlider" style="top:119px;" type="range" class="slider control-slider" min="1" max="10" value="0"/>
-        <svg class="overlay poison-demo-controls-textbox">
-          <text id="alphaText" x="50%" y="10" class="poison-demo-controls-text">
-            Class Separation α = 1.00
-          </text>
-          <text id="betaText" x="50%" y="64" class="poison-demo-controls-text">
-            Random Label Fraction β = 0.00
-          </text>
-          <text id="seedText" x="50%" y="114" class="poison-demo-controls-text">
-            Dataset Seed s = 1
-          </text>
-        </svg>
+        <div id="alpha-container" style="top:0px;" class="slider-container">
+          <label id="alphaText" for="alphaSlider" class="poison-demo-controls-text">Class Separation α = 1.00</label>
+          <input id="alphaSlider" type="range" class="slider control-slider" min="0" max="12" value="4" />
+        </div>
+        <div id="beta-container" style="top:54px;" class="slider-container">
+          <label id="betaText" for="betaSlider" class="poison-demo-controls-text">Random Label Fraction β = 0.00</label>
+          <input id="betaSlider" type="range" class="slider control-slider" min="0" max="10" value="0" />
+        </div>
+        <div id="seed-container" style="top:116px;" class="seed-container">
+          <input id="seedButton" type="button" class="button seed-button" value="Randomize Dataset" />
+          <label for="seedField" class="seed-label">Dataset seed</label>
+          <input id="seedField" type="number" class="input seed-textfield" value="1" />
+        </div>
+        <div style="position:absolute; right:190px; height: 100%; width:1.5px; background-color:#808080;"></div>
+        <div id="mode-container" class="mode-container">
+          <label for="mode" class="mode-label">Poisoning algorithm:</label>
+          <select style="position:absolute; left:140px; top:4px" id="mode" name="mode">
+            <option value="manual">Manual</option>
+            <option value="labelFlip">Label flip</option>
+            <option value="modelTargeted">Model-targeted</option>
+          </select>
+        </div>
+        <div id="manual-buttons" class="demo-buttons-container">
+          <button id="labelButton" class="button control-button">
+            <div>
+              Label:
+            </div>
+            <svg width="16" height="16" viewBox="0 0 10 10">
+              <path d="M0 5Q0 10 5 10 10 10 10 5 10 0 5 0 0 0 0 5" fill="steelblue" />
+            </svg>
+          </button>
+          <button id="toolButton" class="button control-button">
+            <div>
+              Tool:
+            </div>
+            <svg width="16" height="16" viewBox="0 0 10 10">
+              <path d="M1.2145 7.1365-.0113 9.9037 2.7559 8.678l-1.5415-1.5415zM1.5838 6.6299 7.0865 1.1336l1.6781 1.6799L3.2617 8.3098zM9.2027 2.3757l.3494-.3493A1.1871 1.1871 90 107.8736.3477L7.5238.6961z" fill="#1f1f1f" />
+            </svg>
+          </button>
+          <button id="resetButton" class="button control-button">
+            <svg width="16" height="16" viewBox="0 0 10 10">
+              <path d="M1.5 2 1.5 10 8.5 10 8.5 2 7.5 2 7.5 9 2.5 9 2.5 2ZM0.5 1 9.5 1 9.5 2 0.5 2ZM4 1 6 1 6 0 6 0 4 0ZM3 3 3 8 4 8 4 3ZM6 3 6 8 7 8 7 3ZM4.5 3 4.5 8 5.5 8 5.5 3Z" fill="#1f1f1f" />
+            </svg>
+          </button>
+        </div>
       </div>
-      <figcaption style="position:absolute; width: 474px; top:335px; left:494px">
-        Machine learning is susceptible to poisoning attacks where adversaries inject poisoned training data into the training set, usually to induce specific model behavior. When attackers focus their efforts towards subpopulations of the data distribution, which subpopulations are the most vulnerable to an attack?
-      <figcaption>
+      <figcaption style=" position:absolute; width: 370px; top:335px; left:574px; text-align: justify;">
+        Machine learning is susceptible to poisoning attacks in which adversaries inject poisoned training data into the training set, usually to induce specific model behavior. When attackers focus their efforts towards subpopulations of the data distribution, which subpopulations are the most vulnerable to an attack?
+        <figcaption>
     </figure>
   </d-figure>
-
-  <!-- <figure style="position: relative; margin: auto; width: 984px; height: 425px">
-    <div id="demo" style="position:relative; height:300px; border: 1px solid rgba(0, 0, 0, 0.2); background-color: rgba(0, 0, 0, 0.2); text-align: center">Interactive attack demo: the reader can generate datasets using the same parameters used in the experiments, create subpopulations, and try to manually add poisons to achieve the objective</div>
-    <svg id="actualdemo"></svg>
-    <div id="controls" style="position: absolute; width: 300px; height: 50px; left: 20px; top: 320px">
-      <div><p id="slider-value"></p></div>
-      <div><div id="slider"></div></div>
-      <text class="figtext" style="top: -5px; left: 20px; position: relative;">Demo Controls here?</text>
-    </div>
-    <div id="sliderAlpha" style="position: absolute; width: 300px; height: 50px; left: 20px; top: 320px">
-      <text class="figtext" style="top: -5px; left: 20px; position: relative;">Class Separation $d = 1.0$</text>
-    </div>
-    <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 280px; top: 320px;;">
-      <text class="figtext" style="top: -5px; left: 20px; position: relative;">Label Noise $p = 0.2$</text>
-    </div>
-    <figcaption id="democaption" style="position:absolute; width: 500px; top: 320px; left: 484px">
-      Machine learning is susceptible to poisoning attacks where adversaries inject poisoned training data into the training set, usually to induce specific model behavior. When attackers focus their efforts towards subpopulations of the data distribution, which subpopulations are the most vulnerable to an attack?
-    </figcaption>
-  </figure> -->
 
   <d-article>
     <p>
@@ -410,7 +510,7 @@ d-figure.poison-demo {
     </p>
 
     <d-math style="margin: auto" block>
-       D_{l, \mathcal{X}, \mathcal{Y}}(\theta_1, \theta_2) := \max_{(x, y) \in \mathcal{X} \times \mathcal{Y}} l(\theta_1; x, y) - l(\theta_2; x, y),
+      D_{l, \mathcal{X}, \mathcal{Y}}(\theta_1, \theta_2) := \max_{(x, y) \in \mathcal{X} \times \mathcal{Y}} l(\theta_1; x, y) - l(\theta_2; x, y),
     </d-math>
 
     <p>
@@ -620,7 +720,7 @@ d-figure.poison-demo {
     </figure> -->
 
     <p>
-      This is our first example of an exceptionally difficult attack, requiring over 800 poisons. The loss difference between the target and clean models is high, since the target model misclassifies a large number of points in the negative class. Notice that it seems hard to even produce a target model which does not cause a large amount of collateral damage. In some sense, the subpopulation is protected against attacks due it its central location: 
+      This is our first example of an exceptionally difficult attack, requiring over 800 poisons. The loss difference between the target and clean models is high, since the target model misclassifies a large number of points in the negative class. Notice that it seems hard to even produce a target model which does not cause a large amount of collateral damage. In some sense, the subpopulation is protected against attacks due it its central location:
     </p>
 
     <p>
@@ -628,7 +728,7 @@ d-figure.poison-demo {
     </p>
 
     <h3>Quantitative Analysis</h3>
-    
+
     <p>
       Visualizations are helpful, but are rarely possible given the high-dimensional nature of most datasets. Now that we have visualized some of the attacks in the lower-dimensional setting, can we quantify the properties that describe the difficulty of poisoning attacks?
     </p>

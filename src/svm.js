@@ -22,6 +22,13 @@ export class SVM {
     if (tol !== undefined) this.#tol = tol;
   }
 
+  /**
+   * Train SVM using SMO
+   * @param {*} X data points
+   * @param {*} y data labels
+   * @param {*} onUpdate called when model weights are updated
+   * @param {*} reset whether this call is an update step or training from scratch
+   */
   async fit(X, y, onUpdate, reset = true) {
     let id = ++this.#nCalls;
     if (reset) {
@@ -115,12 +122,24 @@ export class SVM {
     }
   }
 
-  async fitGD(X, y, onUpdate) {
+  /**
+   * Train SVM using gradient descent
+   * @param {*} X data points
+   * @param {*} y data labels
+   * @param {*} onUpdate called when model weights are updated
+   */
+  async fitGD(X, y, onUpdate, reset = true) {
     let id = ++this.#nCalls;
     let N = X.length;
-    let eta = 0.25;
+    let eta = 0.02;
     let grad = new Array(3).fill(0);
     let oldGrad = new Array(3).fill(0);
+    // if (reset) {
+    //   this.#theta = new Array(2).fill(0);
+    //   this.#b = 0;
+    // }
+
+    let iter = 0;
 
     do {
       oldGrad = [...grad];
@@ -140,17 +159,21 @@ export class SVM {
       grad[0] += this.#theta[0] / this.#C;
       grad[1] += this.#theta[1] / this.#C;
 
-      // grad[0] = 0.3 * grad[0] + 0.75 * oldGrad[0];
-      // grad[1] = 0.3 * grad[1] + 0.75 * oldGrad[1];
-      // grad[2] = 0.3 * grad[2] + 0.75 * oldGrad[2];
+      grad[0] = 0.8 * grad[0] + 0.2 * oldGrad[0];
+      grad[1] = 0.8 * grad[1] + 0.2 * oldGrad[1];
+      grad[2] = 0.8 * grad[2] + 0.2 * oldGrad[2];
 
       this.#theta[0] -= eta * grad[0];
       this.#theta[1] -= eta * grad[1];
       this.#b -= eta * grad[2];
 
-      onUpdate();
-      await new Promise((resolve) => setTimeout(resolve, 1));
-    } while (Math.abs(dot(grad, grad)) > 1e-6 && id == this.#nCalls);
+      if (iter == 0) {
+        onUpdate();
+        await new Promise((resolve) => setTimeout(resolve, 2));
+      }
+      iter = (iter + 1) % 256;
+    } while (Math.abs(dot(grad, grad)) > 1e-7 && id == this.#nCalls);
+    onUpdate();
   }
 
   get parameters() {
