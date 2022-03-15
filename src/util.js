@@ -114,7 +114,15 @@ export class RNG {
   }
 }
 
-// should move this into json instead of computing
-export function attackSuccess(subpopulation, theta) {
-  return 0;
+export function attackSuccess(X, model) {
+  let n = X.length;
+  if (n === 0) return 1;
+
+  let err = 0;
+  for (let i = 0; i < n; ++i) {
+    let t = X[i][0] * model[0] + X[i][1] * model[1] + model[2];
+    if (t > 0) ++err;
+  }
+
+  return err / X.length;
 }

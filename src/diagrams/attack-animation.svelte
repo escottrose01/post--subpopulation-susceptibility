@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { sqrdist, getModelShape } from "../util.js";
+  import * as svgPaths from "../svg-paths.js";
 
   export let initSpIndex;
   export let data;
@@ -12,22 +13,17 @@
   let playButton;
   let stepForwardButton, stepBackButton;
 
-  let sp_index = initSpIndex;
-  let hover_index = -1;
+  let spIndex = initSpIndex;
+  let hoverIndex = -1;
   let poisonIndex = 0;
   let poisons = [];
-  let nPoisons = data.attacks[sp_index].poisons.length;
+  let nPoisons = data.attacks[spIndex].poisons.length;
   let framerate = Math.max(Math.min(15, parseInt((nPoisons + 1) / 10)), 1);
   let isPlaying = true;
   let waiting = false;
 
   const width = 704;
   const height = 600;
-
-  const playPath = "M 0 0 L 10 5 L 0 10 Z";
-  const pausePath = "M 0 0 L 0 10 L 3 10 L 3 0 Z M 6 0 L 6 10 L 9 10 L 9 0 Z";
-  const stepForwardPath = "M 0 0 L 3 0 L 9 5 L 3 10 L 0 10 L 0 10 L 6 5 L 0 0";
-  const stepBackPath = "M 9 0 L 6 0 L 0 5 L 6 10 L 9 10 L 9 10 L 3 5 L 9 0";
 
   const render = () => {
     let dset = data.dset;
@@ -36,10 +32,16 @@
     const getClass = (p) => {
       if (p.subpops == undefined)
         return p.y == 1 ? "blue-poison" : "red-poison";
-      if (p.subpops.includes(sp_index)) return "target-point";
-      else if (p.subpops.includes(hover_index)) return "selected-point";
+      if (p.subpops.includes(spIndex)) return "target-point";
+      else if (p.subpops.includes(hoverIndex)) return "selected-point";
       else if (p.y == 1) return "blue-point";
       else return "red-point";
+    };
+    const getRadius = (p) => {
+      if (p.subpops === undefined) return 4;
+      else if (p.subpops.includes(hoverIndex) || p.subpops.includes(spIndex))
+        return 5;
+      else return 4;
     };
 
     const margin = { top: 60, right: 40, bottom: 60, left: 40 };
@@ -137,7 +139,8 @@
       .append("circle")
       .attr("class", getClass)
       .attr("cx", (d) => xScale(xValue(d)))
-      .attr("cy", (d) => yScale(yValue(d)));
+      .attr("cy", (d) => yScale(yValue(d)))
+      .attr("r", (d) => getRadius(d));
 
     let poisonScatter = poisonG.selectAll("path");
 
@@ -159,7 +162,7 @@
       d3.select(playButton)
         .select("svg")
         .select("path")
-        .attr("d", isPlaying ? pausePath : playPath);
+        .attr("d", isPlaying ? svgPaths.pausePath : svgPaths.playPath);
     };
 
     const animStepFrame = () => {
@@ -176,8 +179,8 @@
 
     const updateModels = () => {
       let modelShape;
-      let theta_c = data.attacks[sp_index].im_models[0];
-      let theta_t = data.attacks[sp_index].im_models[poisonIndex];
+      let theta_c = data.attacks[spIndex].im_models[0];
+      let theta_t = data.attacks[spIndex].im_models[poisonIndex];
 
       modelShape = getModelShape(theta_c, extentX, extentY);
       model_c
@@ -233,16 +236,16 @@
       let [x, y] = d3.pointer(event);
       (x -= margin.left), (y -= margin.top);
       [x, y] = [xScale.invert(x), yScale.invert(y)];
-      hover_index = delaunay.find(x, y, sp_index);
-      if (sqrdist(data.cluster_centers[hover_index], [x, y]) > 0.05)
-        hover_index = -1;
+      hoverIndex = delaunay.find(x, y, spIndex);
+      if (sqrdist(data.cluster_centers[hoverIndex], [x, y]) > 0.05)
+        hoverIndex = -1;
       updateClasses();
     };
 
     const clickHandler = (event) => {
-      if (hover_index != -1 && hover_index != sp_index) {
-        sp_index = hover_index;
-        nPoisons = data.attacks[sp_index].poisons.length;
+      if (hoverIndex != -1 && hoverIndex != spIndex) {
+        spIndex = hoverIndex;
+        nPoisons = data.attacks[spIndex].poisons.length;
         framerate = Math.max(Math.min(15, parseInt((nPoisons + 1) / 10)), 1);
         resetSlider();
         sliderHandler();
@@ -251,7 +254,7 @@
     };
 
     const mouseoutHandler = (event) => {
-      hover_index = -1;
+      hoverIndex = -1;
       updateClasses();
       updateModels();
     };
@@ -259,7 +262,7 @@
     const sliderHandler = (isUser) => {
       if (isUser) pause(false);
       poisonIndex = +slider.value;
-      poisons = data.attacks[sp_index].poisons.slice(0, poisonIndex);
+      poisons = data.attacks[spIndex].poisons.slice(0, poisonIndex);
       updateData();
       updateModels();
     };
@@ -307,7 +310,7 @@
   style="cursor: pointer"
 >
   <svg width="10" height="10" viewBox="0 0 10 10">
-    <path d={pausePath} fill="#888" />
+    <path d={svgPaths.pausePath} fill="#888" />
   </svg>
 </button>
 <button
@@ -316,7 +319,7 @@
   style="cursor: pointer"
 >
   <svg width="10" height="10" viewBox="0 0 10 10">
-    <path d={stepForwardPath} fill="#888" />
+    <path d={svgPaths.stepForwardPath} fill="#888" />
   </svg>
 </button>
 <button
@@ -325,7 +328,7 @@
   style="cursor: pointer"
 >
   <svg width="10" height="10" viewBox="0 0 10 10">
-    <path d={stepBackPath} fill="#888" />
+    <path d={svgPaths.stepBackPath} fill="#888" />
   </svg>
 </button>
 <input

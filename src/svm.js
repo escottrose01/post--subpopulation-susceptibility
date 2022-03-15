@@ -11,7 +11,7 @@ export class SVM {
   #kernel = dot;
   #maxIters = 200;
   #tol = 0.0001;
-  #C = 100000;
+  #C = 100;
   #theta = new Array(2).fill(0);
   #b = 0;
   #nCalls = 0;
@@ -29,7 +29,7 @@ export class SVM {
    * @param {*} onUpdate called when model weights are updated
    * @param {*} reset whether this call is an update step or training from scratch
    */
-  async fit(X, y, onUpdate, reset = true) {
+  async fitSMO(X, y, onUpdate, reset = true) {
     let id = ++this.#nCalls;
     if (reset) {
       this.#alpha = Array(N).fill(0);
@@ -131,20 +131,16 @@ export class SVM {
   async fitGD(X, y, onUpdate, reset = true) {
     let id = ++this.#nCalls;
     let N = X.length;
-    let eta = 0.02;
+    let eta = 0.5;
     let grad = new Array(3).fill(0);
-    let oldGrad = new Array(3).fill(0);
-    // if (reset) {
-    //   this.#theta = new Array(2).fill(0);
-    //   this.#b = 0;
-    // }
+    let loss = Infinity;
+    let oldLoss = Infinity;
+    let loopCondition = true;
 
     let iter = 0;
-
+    let decay = 0;
     do {
-      oldGrad = [...grad];
       grad.fill(0);
-
       for (let i = 0; i < N; ++i) {
         if (y[i] * (dot(this.#theta, X[i]) + this.#b) < 1) {
           grad[0] -= y[i] * X[i][0];
@@ -152,6 +148,7 @@ export class SVM {
           grad[2] -= y[i];
         }
       }
+
       grad[0] /= N;
       grad[1] /= N;
       grad[2] /= N;
@@ -159,21 +156,37 @@ export class SVM {
       grad[0] += this.#theta[0] / this.#C;
       grad[1] += this.#theta[1] / this.#C;
 
-      grad[0] = 0.8 * grad[0] + 0.2 * oldGrad[0];
-      grad[1] = 0.8 * grad[1] + 0.2 * oldGrad[1];
-      grad[2] = 0.8 * grad[2] + 0.2 * oldGrad[2];
-
       this.#theta[0] -= eta * grad[0];
       this.#theta[1] -= eta * grad[1];
       this.#b -= eta * grad[2];
 
-      if (iter == 0) {
-        onUpdate();
-        await new Promise((resolve) => setTimeout(resolve, 2));
+      if (iter % 64 === 0) {
+        loss = (0.5 * dot(this.#theta, this.#theta)) / this.#C;
+        for (let i = 0; i < N; ++i) {
+          let l = 1 - y[i] * (dot(this.#theta, X[i]) + this.#b);
+          if (l > 0) loss += l;
+        }
+        if (loss >= oldLoss) {
+          eta = 2 / (decay + 4);
+          ++decay;
+        }
+        oldLoss = loss;
       }
-      iter = (iter + 1) % 256;
-    } while (Math.abs(dot(grad, grad)) > 1e-7 && id == this.#nCalls);
-    onUpdate();
+
+      if (eta < 0.1 && iter % 128 === 0) {
+        onUpdate();
+
+        loopCondition =
+          (eta > 1e-2 || iter < 1000) && iter < 500000 && id === this.#nCalls;
+
+        await new Promise((resolve) => setTimeout(resolve, 16));
+      }
+      ++iter;
+    } while (loopCondition);
+    if (id === this.#nCalls) {
+      // console.log("Model converged in ", iter, "iterations, eta=", eta);
+      onUpdate();
+    }
   }
 
   get parameters() {

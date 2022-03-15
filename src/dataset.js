@@ -1,36 +1,45 @@
 import { RNG, range } from "./util.js";
 import { KMeans } from "./kmeans.js";
 
-export function make_classification(n_samples, flip_y, class_sep, seed) {
+export function make_classification(nSamples, flipY, classSep, seed) {
   let X = [],
     y = [];
 
   let rng = new RNG(seed);
+  let m = nSamples / 2;
 
-  // let rndCorner = [randInt(2), randInt(2)];
-  // if (rndCorner == [1, 1]);
   [-1, 1].forEach((label) => {
-    let [s1, s2] = [rng.random() + 0.5, rng.random() + 0.5];
-    let t = rng.randGauss() / 2;
-    let cluster = range(n_samples / 2).map(() => {
+    let [s1, s2] = [rng.random() + 0.1, rng.random() + 0.1];
+    let t = 2 * rng.random() - 1;
+    let flip = rng.random() > 0.5;
+    let cluster = range(m).map(() => {
       let e = [
-        label * class_sep + s1 * rng.randGauss(),
-        label * class_sep + s2 * rng.randGauss(),
+        label * classSep + s1 * rng.randGauss(),
+        label * classSep + s2 * rng.randGauss(),
       ];
       e[1] += t * e[0];
+      if (flip) e = [e[1], e[0]];
       return e;
     });
-
-    // for (let i = 0; i < 2; ++i) {}
 
     X = X.concat(cluster);
 
     y = y.concat(
-      range(n_samples / 2).map(() =>
-        2 * rng.random() < flip_y ? -label : label
-      )
+      range(m).map(() => (2 * rng.random() < flipY ? -label : label))
     );
   });
+
+  if (rng.random() > 0.5) {
+    for (let i = 0; i < m; ++i) {
+      [X[i], X[i + m]] = [X[i + m], X[i]];
+    }
+  }
+
+  if (rng.random() > 0.5) {
+    for (let i = 0; i < X.length; ++i) {
+      X[i][1] = -X[i][1];
+    }
+  }
 
   for (let i = 0; i < 2; ++i) {
     let [xMin, xMax] = [
@@ -44,7 +53,7 @@ export function make_classification(n_samples, flip_y, class_sep, seed) {
     });
   }
 
-  let clusters = new KMeans(flip_y > 0 ? 6 : 3);
+  let clusters = new KMeans(flipY > 0 ? 6 : 3);
   clusters.fit(
     X.filter((e, i) => y[i] === -1),
     (seed = 1)
