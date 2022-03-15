@@ -299,7 +299,7 @@
           attackInstance = undefined;
           break;
         case "label flip":
-          attackLoop((attackInstance = new labelFlipAttack(dset, spIndex)));
+          attackLoop(new labelFlipAttack(dset, spIndex));
           break;
         case "model-targeted":
           attackLoop(new modelTargetedAttack(dset, spIndex));
@@ -508,6 +508,7 @@
             manualButtons.property("style", false);
             algorithmButtons.attr("style", "display: none;");
             action = 0;
+            attackInstance = undefined;
             toolButton
               .select("svg")
               .select("path")
