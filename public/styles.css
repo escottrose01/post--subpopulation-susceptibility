@@ -47,7 +47,7 @@ d-figure.poison-demo {
   width: 454px;
   height: 150px;
   left: 20px;
-  top: 335px;
+  top: 435px;
 }
 
 .poison-demo-controls-text {
@@ -78,35 +78,43 @@ d-figure.poison-demo {
 .blue-point {
   fill: steelblue;
   opacity: 0.6;
-  r: 4;
+  /* r: 4; */
 }
 
 .red-point {
   fill: orangered;
   opacity: 0.7;
-  r: 4;
+  /* r: 4; */
 }
 
 .target-point {
   fill: orange;
   opacity: 1;
-  r: 5;
+  /* transform: scale(1.25, 1.25); */
+  /* r: 5; */
 }
 
 .selected-point {
   fill: orange;
   opacity: 0.5;
-  r: 5;
+  /* transform: scale(1.25, 1.25); */
+  /* r: 5; */
 }
 
 .blue-poison {
   fill: steelblue;
-  /* r: 5; */
 }
 
 .red-poison {
   fill: orangered;
-  /* r: 5; */
+}
+
+.blue-delete {
+  fill: black;
+}
+
+.red-delete {
+  fill: black;
 }
 
 .area-blue {
@@ -188,6 +196,14 @@ d-figure.poison-demo {
   border-radius: 18px;
   border: 0.1px solid #a0a0a0;
 }
+.control-slider::-moz-range-track {
+  height: 6.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #808080, 0px 0px 1px #b0b0b0;
+  background: #d3d3d3;
+  border-radius: 18px;
+  border: 0.1px solid #a0a0a0;
+}
 .control-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -199,9 +215,9 @@ d-figure.poison-demo {
   margin-top: calc(0.5 * (6.4px - 16px));
 }
 .control-slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  border-radius: 45%;
+  width: 16px;
+  height: 16px;
+  border-radius: 40%;
   background-color: #3d3d3d;
   cursor: pointer;
 }
@@ -214,6 +230,7 @@ d-figure.poison-demo {
   border-radius: 8px;
   display: block;
   align-items: center;
+  -webkit-appearance: none;
 }
 
 .play-button {
@@ -263,6 +280,7 @@ d-figure.poison-demo {
   border: 0;
   border-bottom: 2px solid #aaa;
   background: transparent;
+  -webkit-appearance: none;
 }
 .input::-webkit-outer-spin-button,
 .input::-webkit-inner-spin-button {
@@ -327,3 +345,27 @@ d-figure.poison-demo {
   width: calc(100% - 180px);
   height: calc(100% - 32px);
 }
+
+.demo-stats-container {
+  position: absolute;
+  text-align: left;
+  pointer-events: none;
+  margin: 1px;
+  width: 170px;
+  height: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+  line-height: 12px;
+  background-color: rgba(255, 255, 255, 0.9);
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* .demo-stats-container:hover {
+  opacity: 0.5;
+} */

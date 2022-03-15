@@ -53,7 +53,7 @@ d-figure.poison-demo {
   width: 454px;
   height: 150px;
   left: 20px;
-  top: 335px;
+  top: 435px;
 }
 
 .poison-demo-controls-text {
@@ -84,35 +84,43 @@ d-figure.poison-demo {
 .blue-point {
   fill: steelblue;
   opacity: 0.6;
-  r: 4;
+  /* r: 4; */
 }
 
 .red-point {
   fill: orangered;
   opacity: 0.7;
-  r: 4;
+  /* r: 4; */
 }
 
 .target-point {
   fill: orange;
   opacity: 1;
-  r: 5;
+  /* transform: scale(1.25, 1.25); */
+  /* r: 5; */
 }
 
 .selected-point {
   fill: orange;
   opacity: 0.5;
-  r: 5;
+  /* transform: scale(1.25, 1.25); */
+  /* r: 5; */
 }
 
 .blue-poison {
   fill: steelblue;
-  /* r: 5; */
 }
 
 .red-poison {
   fill: orangered;
-  /* r: 5; */
+}
+
+.blue-delete {
+  fill: black;
+}
+
+.red-delete {
+  fill: black;
 }
 
 .area-blue {
@@ -194,6 +202,14 @@ d-figure.poison-demo {
   border-radius: 18px;
   border: 0.1px solid #a0a0a0;
 }
+.control-slider::-moz-range-track {
+  height: 6.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #808080, 0px 0px 1px #b0b0b0;
+  background: #d3d3d3;
+  border-radius: 18px;
+  border: 0.1px solid #a0a0a0;
+}
 .control-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -205,9 +221,9 @@ d-figure.poison-demo {
   margin-top: calc(0.5 * (6.4px - 16px));
 }
 .control-slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  border-radius: 45%;
+  width: 16px;
+  height: 16px;
+  border-radius: 40%;
   background-color: #3d3d3d;
   cursor: pointer;
 }
@@ -220,6 +236,7 @@ d-figure.poison-demo {
   border-radius: 8px;
   display: block;
   align-items: center;
+  -webkit-appearance: none;
 }
 
 .play-button {
@@ -269,6 +286,7 @@ d-figure.poison-demo {
   border: 0;
   border-bottom: 2px solid #aaa;
   background: transparent;
+  -webkit-appearance: none;
 }
 .input::-webkit-outer-spin-button,
 .input::-webkit-inner-spin-button {
@@ -334,6 +352,30 @@ d-figure.poison-demo {
   height: calc(100% - 32px);
 }
 
+.demo-stats-container {
+  position: absolute;
+  text-align: left;
+  pointer-events: none;
+  margin: 1px;
+  width: 170px;
+  height: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+  line-height: 12px;
+  background-color: rgba(255, 255, 255, 0.9);
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* .demo-stats-container:hover {
+  opacity: 0.5;
+} */
+
   </style>
   <script src="https://distill.pub/template.v2.js"></script>
   <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -397,7 +439,7 @@ d-figure.poison-demo {
         <div style="position:absolute; right:190px; height: 100%; width:1.5px; background-color:#808080;"></div>
         <div id="mode-container" class="mode-container">
           <label for="mode" class="mode-label">Poisoning algorithm:</label>
-          <select style="position:absolute; left:140px; top:4px" id="mode" name="mode">
+          <select style="position:absolute; left:140px; top:4px" id="attackAlgo" name="Attack Algorithm">
             <option value="manual">Manual</option>
             <option value="labelFlip">Label flip</option>
             <option value="modelTargeted">Model-targeted</option>
@@ -426,12 +468,41 @@ d-figure.poison-demo {
             </svg>
           </button>
         </div>
+        <div id="algorithm-buttons" class="demo-buttons-container" style="visibility: hidden;">
+          <button id="algorithmPlayButton" class="button control-button" style="cursor: pointer">
+            <svg width="10" height="10" viewBox="0 0 10 10">
+              <path d="M0 0L0 10L3 10L3 0ZM6 0L6 10L9 10L9 0Z" ; fill="#1f1f1f" />
+            </svg>
+          </button>
+          <button id="algorithmResetButton" class="button control-button">
+            <svg width="16" height="16" viewBox="0 0 10 10">
+              <path d="M1.5 2 1.5 10 8.5 10 8.5 2 7.5 2 7.5 9 2.5 9 2.5 2ZM0.5 1 9.5 1 9.5 2 0.5 2ZM4 1 6 1 6 0 6 0 4 0ZM3 3 3 8 4 8 4 3ZM6 3 6 8 7 8 7 3ZM4.5 3 4.5 8 5.5 8 5.5 3Z" fill="#1f1f1f" />
+            </svg>
+          </button>
+        </div>
       </div>
-      <figcaption style=" position:absolute; width: 370px; top:335px; left:574px; text-align: justify;">
+      <figcaption style=" position:absolute; width: 370px; top:435px; left:574px; text-align: justify;">
         Machine learning is susceptible to poisoning attacks in which adversaries inject poisoned training data into the training set, usually to induce specific model behavior. When attackers focus their efforts towards subpopulations of the data distribution, which subpopulations are the most vulnerable to an attack?
         <figcaption>
     </figure>
   </d-figure>
+
+  <!--
+  <button bind:this={playButton} class="button play-button" style="cursor: pointer">
+    <svg width="10" height="10" viewBox="0 0 10 10">
+      <path d={svgPaths.pausePath} fill="#888" />
+    </svg>
+  </button>
+  <button bind:this={stepForwardButton} class="button step-forward-button" style="cursor: pointer">
+    <svg width="10" height="10" viewBox="0 0 10 10">
+      <path d={svgPaths.stepForwardPath} fill="#888" />
+    </svg>
+  </button>
+  <button bind:this={stepBackButton} class="button step-back-button" style="cursor: pointer">
+    <svg width="10" height="10" viewBox="0 0 10 10">
+      <path d={svgPaths.stepBackPath} fill="#888" />
+    </svg>
+  </button> -->
 
   <d-article>
     <p>
