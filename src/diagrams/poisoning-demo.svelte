@@ -379,11 +379,7 @@
           // updateClasses();
           break;
         case "subpop-select":
-          hoverIndex = delaunay.find(
-            x,
-            y,
-            hoverIndex !== -1 ? hoverIndex : spIndex
-          );
+          hoverIndex = delaunay.find(x, y);
           if (sqrdist(clusterCenters[hoverIndex], [x, y]) > 0.05)
             hoverIndex = -1;
           updateClasses();
