@@ -43,9 +43,13 @@ d-figure.poison-demo {
   grid-column: text;
   display: block;
   width: 984px;
-  height: 550;
+  height: 684;
   margin-left: auto;
   margin-right: auto;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .poison-demo-controls {
@@ -53,7 +57,9 @@ d-figure.poison-demo {
   width: 454px;
   height: 150px;
   left: 20px;
-  top: 435px;
+  /* left: calc(100% - 964px - 20px); */
+  /* top: 435px; */
+  top: 485px;
 }
 
 .poison-demo-controls-text {
@@ -95,6 +101,8 @@ d-figure.poison-demo {
 
 .target-point {
   fill: orange;
+  /* fill: blueviolet; */
+  /* fill: steelblue; */
   opacity: 1;
   /* transform: scale(1.25, 1.25); */
   /* r: 5; */
@@ -102,6 +110,7 @@ d-figure.poison-demo {
 
 .selected-point {
   fill: orange;
+  /* fill: steelblue; */
   opacity: 0.5;
   /* transform: scale(1.25, 1.25); */
   /* r: 5; */
@@ -109,10 +118,12 @@ d-figure.poison-demo {
 
 .blue-poison {
   fill: steelblue;
+  /* opacity: 0.5; */
 }
 
 .red-poison {
   fill: orangered;
+  /* opacity: 0.5; */
 }
 
 .blue-delete {
@@ -174,15 +185,6 @@ d-figure.poison-demo {
   cursor: pointer;
 }
 
-.control-slider {
-  width: calc(100% - 200px);
-  height: 16px;
-  padding: 0;
-  margin: 0;
-  top: 24px;
-  opacity: 0.7;
-}
-
 .slider-container {
   position: absolute;
   width: 100%;
@@ -192,8 +194,17 @@ d-figure.poison-demo {
   position: absolute;
   width: 180px;
   left: calc(100% - 180px);
+  /* left: calc(100% - 230px); */
 }
 
+.control-slider {
+  width: calc(100% - 200px);
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  top: 24px;
+  opacity: 0.7;
+}
 .control-slider::-webkit-slider-runnable-track {
   height: 6.4px;
   cursor: pointer;
@@ -304,7 +315,7 @@ d-figure.poison-demo {
 
 .seed-label {
   position: absolute;
-  left: calc(100% - 200px - 100px);
+  left: calc(100% - 200px - 115px);
   top: 14px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
@@ -324,13 +335,14 @@ d-figure.poison-demo {
 .seed-textfield {
   font-family: Arial, Helvetica, sans-serif;
   font-size: small;
-  left: calc(100% - 200px - 100px);
-  width: 100px;
+  left: calc(100% - 200px - 115px);
+  width: calc(-250px + 200px + 115px);
+  /* width: 100px; */
 }
 
 .seed-button {
   left: calc(100% - 200px - 100px - 150px - 10px);
-  width: 150px;
+  /* width: 150px; */
   font-family: Arial, Helvetica, sans-serif;
   font-size: small;
   font-weight: bold;
@@ -346,6 +358,7 @@ d-figure.poison-demo {
   display: flex;
   justify-content: center;
   position: absolute;
+  /* left: calc(100% - 230px); */
   left: calc(100% - 180px);
   top: 32px;
   width: calc(100% - 180px);
@@ -353,6 +366,41 @@ d-figure.poison-demo {
 }
 
 .demo-stats-container {
+  position: absolute;
+  /* margin-top: 6px; */
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.2em;
+  /* margin-bottom: 0px;
+  margin-top: 0px; */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.demo-stats-title {
+  text-align: left;
+  margin-left: 6px;
+  font-weight: bold;
+  font-size: medium;
+  margin-bottom: 2px;
+}
+
+.demo-stats-entry {
+  text-align: left;
+  margin-left: 6px;
+  margin-right: 6px;
+  font-size: small;
+  margin-bottom: 0px;
+}
+
+.demo-stats-entry .right {
+  text-align: right;
+}
+
+/* .demo-stats-container {
   position: absolute;
   text-align: left;
   pointer-events: none;
@@ -371,10 +419,23 @@ d-figure.poison-demo {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-/* .demo-stats-container:hover {
-  opacity: 0.5;
 } */
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.demo-stats-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  font-weight: bold;
+  line-height: 12px;
+}
 
   </style>
   <script src="https://distill.pub/template.v2.js"></script>
@@ -436,7 +497,7 @@ d-figure.poison-demo {
           <label for="seedField" class="seed-label">Dataset seed</label>
           <input id="seedField" type="number" class="input seed-textfield" value="1" />
         </div>
-        <div style="position:absolute; right:190px; height: 100%; width:1.5px; background-color:#808080;"></div>
+        <div style="position:absolute; right:188px; height: 100%; width:1.5px; background-color:#808080;"></div>
         <div id="mode-container" class="mode-container">
           <label for="mode" class="mode-label">Poisoning algorithm:</label>
           <select style="position:absolute; left:140px; top:4px" id="attackAlgo" name="Attack Algorithm">
@@ -481,7 +542,7 @@ d-figure.poison-demo {
           </button>
         </div>
       </div>
-      <figcaption style=" position:absolute; width: 370px; top:435px; left:574px; text-align: justify;">
+      <figcaption style=" position:absolute; width: 380px; top:485px; left:594px; text-align: left;">
         Machine learning is susceptible to poisoning attacks in which adversaries inject poisoned training data into the training set, usually to induce specific model behavior. When attackers focus their efforts towards subpopulations of the data distribution, which subpopulations are the most vulnerable to an attack?
         <figcaption>
     </figure>

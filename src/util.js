@@ -1,3 +1,5 @@
+import { mode } from "d3";
+
 export function range(n) {
   return Array(n)
     .fill()
@@ -124,5 +126,30 @@ export function attackSuccess(X, model) {
     if (t > 0) ++err;
   }
 
-  return err / X.length;
+  return err / n;
+}
+
+export function accuracy(dset, model) {
+  let n = dset.length;
+  if (n === 0) return 1;
+
+  let acc = 0;
+  for (let i = 0; i < n; ++i) {
+    let t = dset[i].x[0] * model[0] + dset[i].x[1] * model[1] + model[2];
+    if (dset[i].y * t < 0) ++acc;
+  }
+
+  return acc / n;
+}
+
+export function loss(dset, model) {
+  let n = dset.length;
+
+  let l = 0.005 * (model[0] * model[0] + model[1] * model[1]);
+  for (let i = 0; i < n; ++i) {
+    let t = 1 - dset[i].y * (dset[i].x[0] * model[0] + dset[i].x[1] * model[1] + model[2]);
+    if (t > 0) l += t;
+  }
+
+  return l;
 }

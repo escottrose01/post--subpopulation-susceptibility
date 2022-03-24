@@ -49,10 +49,7 @@ export class SVM {
           E_i += this.#alpha[j] * y[j] * this.#kernel(X[i], X[j]);
         }
 
-        if (
-          !(y[i] * E_i < -this.#tol && this.#alpha[i] < this.#C) &&
-          !(y[i] * E_i > this.#tol && this.#alpha[i] > 0)
-        )
+        if (!(y[i] * E_i < -this.#tol && this.#alpha[i] < this.#C) && !(y[i] * E_i > this.#tol && this.#alpha[i] > 0))
           continue;
 
         let j = i;
@@ -77,10 +74,7 @@ export class SVM {
 
         if (Math.abs(L - H) < 1e-5) continue;
 
-        let eta =
-          2 * this.#kernel(X[i], X[j]) -
-          this.#kernel(X[i], X[i]) -
-          this.#kernel(X[j], X[j]);
+        let eta = 2 * this.#kernel(X[i], X[j]) - this.#kernel(X[i], X[i]) - this.#kernel(X[j], X[j]);
 
         if (eta >= 0) continue;
 
@@ -128,7 +122,7 @@ export class SVM {
    * @param {*} y data labels
    * @param {*} onUpdate called when model weights are updated
    */
-  async fitGD(X, y, onUpdate, reset = true) {
+  fitGD(X, y) {
     let id = ++this.#nCalls;
     let N = X.length;
     let eta = 0.5;
@@ -173,20 +167,11 @@ export class SVM {
         oldLoss = loss;
       }
 
-      if (eta < 0.1 && iter % 128 === 0) {
-        onUpdate();
-
-        loopCondition =
-          (eta > 1e-2 || iter < 1000) && iter < 500000 && id === this.#nCalls;
-
-        await new Promise((resolve) => setTimeout(resolve, 16));
-      }
+      loopCondition = (eta > 5e-2 || iter < 1000) && iter < 50000 && id == this.#nCalls;
       ++iter;
     } while (loopCondition);
-    if (id === this.#nCalls) {
-      // console.log("Model converged in ", iter, "iterations, eta=", eta);
-      onUpdate();
-    }
+
+    return id == this.#nCalls;
   }
 
   get parameters() {

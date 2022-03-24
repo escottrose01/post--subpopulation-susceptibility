@@ -1,12 +1,78 @@
-import { RNG } from "./util.js";
+import { RNG, accuracy, loss, attackSuccess } from "./util.js";
+import { SVM } from "./svm.js";
 
 export class modelTargetedAttack {
   #targetModel;
+  #imModel;
+  #subpop;
 
-  constructor(dset, spIndex) {}
+  constructor(dset, spIndex) {
+    this.#subpop = dset.filter((d) => d.subpops.includes(spIndex));
+    this.#generateTargetModel(dset);
+  }
 
-  getNextPoint() {
-    return [[0, 0], 1];
+  async #generateTargetModel(dset) {
+    let svm = new SVM();
+    let bestTarget;
+    let minLoss = Infinity;
+    let n = this.#subpop.length;
+    for (let i = 60; i <= 200; i += 20) {
+      let repeats = Math.ceil(i / n);
+      let poisons = [];
+      for (let rep = 0; rep < repeats; ++rep) {
+        for (let j = 0; j < n; ++j) poisons.push({ x: this.#subpop[j].x, y: -this.#subpop[j].y });
+      }
+
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      let data = dset.concat(poisons);
+      svm.fitGD(
+        data.map((d) => d.x),
+        data.map((d) => d.y)
+      );
+
+      let l = loss(dset, svm.parameters);
+      let success = attackSuccess(
+        this.#subpop.map((d) => d.x),
+        svm.parameters
+      );
+
+      if (success > 0.999 && l < minLoss) {
+        bestTarget = svm.parameters;
+        minLoss = l;
+      }
+    }
+
+    this.#targetModel = bestTarget;
+  }
+
+  async getNextPoint() {
+    if (this.#imModel === undefined || this.#targetModel === undefined) return [undefined, undefined];
+
+    let poison = [[0, 0], 1];
+    let maxLossDiff = 0;
+    for (let x = 0; x <= 1; x += 0.01) {
+      for (let y = 0; y <= 1; y += 0.01) {
+        for (let label = -1; label <= 1; label += 2) {
+          let l = 0;
+          let t = 1 - label * (x * this.#targetModel[0] + y * this.#targetModel[1] + this.#targetModel[2]);
+          if (t > 0) l -= t;
+          t = 1 - label * (x * this.#imModel[0] + y * this.#imModel[1] + this.#imModel[2]);
+          if (t > 0) l += t;
+
+          if (l > maxLossDiff) {
+            poison = [[x, y], label];
+            maxLossDiff = l;
+          }
+        }
+      }
+    }
+
+    return poison;
+  }
+
+  updateIntermediateModel(model) {
+    this.#imModel = model;
   }
 
   get targetModel() {
@@ -23,32 +89,8 @@ export class labelFlipAttack {
     this.#rng = new RNG(1);
   }
 
-  getNextPoint() {
+  async getNextPoint() {
     let choice = this.#subpop[this.#rng.randInt(this.#subpop.length)];
     return [choice.x, -choice.y];
   }
 }
-
-// export async function generateTargetModel(X, y, subpop) {}
-
-// export async function labelFlipPoint(X, y, subpop) {
-//   let choice = randInt(subpop.length);
-//   return {
-//     x: X[choice],
-//     y: -y[choice],
-//   };
-// }
-
-// export async function onlineAttackPoint(
-//   X,
-//   y,
-//   imModel,
-//   targetModel,
-//   xlim,
-//   ylim
-// ) {
-//   let theta = [targetModel[0], targetModel[1]];
-//   let b = targetModel[2];
-
-//   let x = [0.5, 0.5];
-// }
