@@ -37,6 +37,7 @@
   let poisonLabel = 1;
   let attackInstance;
   let attackPaused = false;
+  let fitting = false;
   let successScore = 0.0;
 
   let [dset, clusterCenters] = make_classification(nSamples, flip_y, class_sep, seed);
@@ -252,22 +253,31 @@
           .attr("y1", yScale(modelShape.boundary[0][1]))
           .attr("y2", yScale(modelShape.boundary[1][1]));
       }
+
+      fitting = false;
     };
 
     const retrainModels = async (retrainClean) => {
+      fitting = true;
       let data = dset.concat(poisons);
+      let update;
+
       if (retrainClean) {
-        svmClean.fitGD(
+        update = await svmClean.fitGD(
           dset.map((d) => d.x),
           dset.map((d) => d.y)
         );
-        updateModels();
+        if (update) {
+          svm.parameters = svmClean.parameters;
+          updateModels();
+        }
+      } else {
+        update = await svm.fitGD(
+          data.map((d) => d.x),
+          data.map((d) => d.y)
+        );
+        if (update) updateModels();
       }
-      svm.fitGD(
-        data.map((d) => d.x),
-        data.map((d) => d.y)
-      );
-      updateModels();
     };
 
     const insertPoison = async (poison, label) => {
@@ -304,6 +314,7 @@
           attackLoop(new labelFlipAttack(dset, spIndex));
           break;
         case "model-targeted":
+          modelT.attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", 0);
           attackLoop(new modelTargetedAttack(dset, spIndex));
           break;
       }
@@ -314,7 +325,7 @@
       lossDifferenceText.innerHTML = "???";
       let [poison, label] = [undefined, undefined];
       while (instance === attackInstance) {
-        if (successScore < 1 && !attackPaused && poisons.length < nSamples) {
+        if (successScore < 1 && !attackPaused && poisons.length < nSamples && !fitting) {
           if (attackInstance.updateIntermediateModel !== undefined)
             attackInstance.updateIntermediateModel(svm.parameters);
 
@@ -334,6 +345,7 @@
         }
         await new Promise((resolve) => setTimeout(resolve, 300));
       }
+      instance.destroy();
     };
 
     const mousemoveHandler = (event) => {

@@ -5,10 +5,15 @@ export class modelTargetedAttack {
   #targetModel;
   #imModel;
   #subpop;
+  #destroying;
 
   constructor(dset, spIndex) {
     this.#subpop = dset.filter((d) => d.subpops.includes(spIndex));
     this.#generateTargetModel(dset);
+  }
+
+  destroy() {
+    this.#destroying = true;
   }
 
   async #generateTargetModel(dset) {
@@ -16,17 +21,18 @@ export class modelTargetedAttack {
     let bestTarget;
     let minLoss = Infinity;
     let n = this.#subpop.length;
-    for (let i = 60; i <= 200; i += 20) {
-      let repeats = Math.ceil(i / n);
-      let poisons = [];
+    let m = 20;
+    let repeats = Math.ceil(m / n);
+    let poisons = [];
+    for (let i = 0; i < 4; ++i) {
       for (let rep = 0; rep < repeats; ++rep) {
         for (let j = 0; j < n; ++j) poisons.push({ x: this.#subpop[j].x, y: -this.#subpop[j].y });
       }
-
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-
       let data = dset.concat(poisons);
-      svm.fitGD(
+
+      if (this.#destroying) break;
+
+      await svm.fitGD(
         data.map((d) => d.x),
         data.map((d) => d.y)
       );
@@ -40,6 +46,7 @@ export class modelTargetedAttack {
       if (success > 0.999 && l < minLoss) {
         bestTarget = svm.parameters;
         minLoss = l;
+        break;
       }
     }
 
@@ -66,6 +73,7 @@ export class modelTargetedAttack {
           }
         }
       }
+      await new Promise((resolve) => setTimeout(resolve, 1));
     }
 
     return poison;
@@ -88,6 +96,8 @@ export class labelFlipAttack {
     this.#subpop = dset.filter((d) => d.subpops.includes(spIndex));
     this.#rng = new RNG(1);
   }
+
+  destroy() {}
 
   async getNextPoint() {
     let choice = this.#subpop[this.#rng.randInt(this.#subpop.length)];

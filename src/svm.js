@@ -122,7 +122,7 @@ export class SVM {
    * @param {*} y data labels
    * @param {*} onUpdate called when model weights are updated
    */
-  fitGD(X, y) {
+  async fitGD(X, y) {
     let id = ++this.#nCalls;
     let N = X.length;
     let eta = 0.5;
@@ -167,6 +167,8 @@ export class SVM {
         oldLoss = loss;
       }
 
+      if (iter % 512 === 0) await new Promise((resolve) => setTimeout(resolve, 1));
+
       loopCondition = (eta > 5e-2 || iter < 1000) && iter < 50000 && id == this.#nCalls;
       ++iter;
     } while (loopCondition);
@@ -176,5 +178,10 @@ export class SVM {
 
   get parameters() {
     return [...this.#theta, this.#b];
+  }
+
+  set parameters(params) {
+    this.#theta = [params[0], params[1]];
+    this.#b = params[2];
   }
 }
