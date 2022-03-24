@@ -6,10 +6,12 @@ export class modelTargetedAttack {
   #imModel;
   #subpop;
   #destroying;
+  #onReady;
 
-  constructor(dset, spIndex) {
+  constructor(dset, spIndex, onReady) {
     this.#subpop = dset.filter((d) => d.subpops.includes(spIndex));
     this.#generateTargetModel(dset);
+    this.#onReady = onReady;
   }
 
   destroy() {
@@ -30,7 +32,7 @@ export class modelTargetedAttack {
       }
       let data = dset.concat(poisons);
 
-      if (this.#destroying) break;
+      if (this.#destroying) return;
 
       await svm.fitGD(
         data.map((d) => d.x),
@@ -51,6 +53,7 @@ export class modelTargetedAttack {
     }
 
     this.#targetModel = bestTarget;
+    this.#onReady();
   }
 
   async getNextPoint() {
@@ -73,7 +76,7 @@ export class modelTargetedAttack {
           }
         }
       }
-      await new Promise((resolve) => setTimeout(resolve, 1));
+      if ((100 * x) % 10 === 0) await new Promise((resolve) => setTimeout(resolve, 1));
     }
 
     return poison;

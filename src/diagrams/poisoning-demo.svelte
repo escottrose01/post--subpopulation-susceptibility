@@ -315,7 +315,7 @@
           break;
         case "model-targeted":
           modelT.attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", 0);
-          attackLoop(new modelTargetedAttack(dset, spIndex));
+          attackLoop(new modelTargetedAttack(dset, spIndex, updateModels));
           break;
       }
     };
