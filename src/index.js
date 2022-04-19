@@ -7,8 +7,31 @@ import "core-js/stable";
 
 import AttackAnimation from "./diagrams/attack-animation.svelte";
 import PoisonDemo from "./diagrams/poisoning-demo.svelte";
+import ParameterSpaceAcc from "./diagrams/parameter-space-acc.svelte";
 
 let fID = 0;
+const figureParams = [
+  {
+    dset: "1.00-0.1-5",
+    subpop: 6,
+  },
+  {
+    dset: "2.00-1.0-4",
+    subpop: 6,
+  },
+  {
+    dset: "0.00-0.0-4",
+    subpop: 8,
+  },
+  {
+    dset: "2.00-0.0-4",
+    subpop: 4,
+  },
+  {
+    dset: "2.00-0.0-4",
+    subpop: 0,
+  },
+];
 
 {
   const figure = document.getElementById("svelte-poison-demo-dfigure");
@@ -27,30 +50,28 @@ let fID = 0;
 }
 
 {
-  const figure = document.getElementById("svelte-scatterplot-dfigure-example1");
+  const figure = document.getElementById("svelte-param-space-acc-dfigure");
   let scatterplot;
   figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/1.00-0.1-5.json")
+    fetch("https://escottrose01.github.io/poisoning-data/avg-stats.json")
       .then((resp) => resp.json())
       .then((dataJson) => {
-        const target = figure.querySelector("#svelte-scatterplot-target");
-        scatterplot = new AttackAnimation({
+        const target = figure.querySelector("#svelte-param-space-acc-target");
+        scatterplot = new ParameterSpaceAcc({
           target: target,
           props: {
-            data: dataJson,
-            initSpIndex: 6,
-            fID: fID++,
+            cleanAccuracies: dataJson.clean_acc,
           },
         });
       });
   });
 }
 
-{
-  const figure = document.getElementById("svelte-scatterplot-dfigure-example2");
+for (let fig = 1; fig <= figureParams.length; ++fig) {
+  const figure = document.getElementById(`svelte-scatterplot-dfigure-example${fig}`);
   let scatterplot;
   figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/2.00-1.0-4.json")
+    fetch(`https://escottrose01.github.io/poisoning-data/attacks/${figureParams[fig - 1].dset}.json`)
       .then((resp) => resp.json())
       .then((dataJson) => {
         const target = figure.querySelector("#svelte-scatterplot-target");
@@ -58,67 +79,7 @@ let fID = 0;
           target: target,
           props: {
             data: dataJson,
-            initSpIndex: 6,
-            fID: fID++,
-          },
-        });
-      });
-  });
-}
-
-{
-  const figure = document.getElementById("svelte-scatterplot-dfigure-example3");
-  let scatterplot;
-  figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/0.00-0.0-4.json")
-      .then((resp) => resp.json())
-      .then((dataJson) => {
-        const target = figure.querySelector("#svelte-scatterplot-target");
-        scatterplot = new AttackAnimation({
-          target: target,
-          props: {
-            data: dataJson,
-            initSpIndex: 8,
-            fID: fID++,
-          },
-        });
-      });
-  });
-}
-
-{
-  const figure = document.getElementById("svelte-scatterplot-dfigure-example4");
-  let scatterplot;
-  figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/2.00-0.0-4.json")
-      .then((resp) => resp.json())
-      .then((dataJson) => {
-        const target = figure.querySelector("#svelte-scatterplot-target");
-        scatterplot = new AttackAnimation({
-          target: target,
-          props: {
-            data: dataJson,
-            initSpIndex: 4,
-            fID: fID++,
-          },
-        });
-      });
-  });
-}
-
-{
-  const figure = document.getElementById("svelte-scatterplot-dfigure-example5");
-  let scatterplot;
-  figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/2.00-0.0-4.json")
-      .then((resp) => resp.json())
-      .then((dataJson) => {
-        const target = figure.querySelector("#svelte-scatterplot-target");
-        scatterplot = new AttackAnimation({
-          target: target,
-          props: {
-            data: dataJson,
-            initSpIndex: 3,
+            initSpIndex: figureParams[fig - 1].subpop,
             fID: fID++,
           },
         });

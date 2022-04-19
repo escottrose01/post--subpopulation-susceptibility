@@ -5,9 +5,6 @@ export const pencilPath =
 export const subpopPath =
   "M3 2A1 1 0 001 2 1 1 0 003 2M7 3A1 1 0 005 3 1 1 0 007 3M2 5A1 1 0 000 5 1 1 0 002 5M9 6A1 1 0 007 6 1 1 0 009 6M5 5A1 1 0 003 5 1 1 0 005 5M5 8A1 1 0 003 8 1 1 0 005 8M9 9A1 1 0 007 9 1 1 0 009 9";
 export const playPath = "M 0 0 L 10 5 L 0 10 Z";
-export const pausePath =
-  "M 0 0 L 0 10 L 3 10 L 3 0 Z M 6 0 L 6 10 L 9 10 L 9 0 Z";
-export const stepForwardPath =
-  "M 0 0 L 3 0 L 9 5 L 3 10 L 0 10 L 0 10 L 6 5 L 0 0";
-export const stepBackPath =
-  "M 9 0 L 6 0 L 0 5 L 6 10 L 9 10 L 9 10 L 3 5 L 9 0";
+export const pausePath = "M 0 0 L 0 10 L 3 10 L 3 0 Z M 6 0 L 6 10 L 9 10 L 9 0 Z";
+export const stepForwardPath = "M 0 0 L 3 0 L 9 5 L 3 10 L 0 10 L 0 10 L 6 5 L 0 0";
+export const stepBackPath = "M 9 0 L 6 0 L 0 5 L 6 10 L 9 10 L 9 10 L 3 5 L 9 0";

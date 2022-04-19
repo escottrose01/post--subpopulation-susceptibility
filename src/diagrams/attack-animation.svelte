@@ -30,8 +30,7 @@
     const xValue = (p) => p.x[0];
     const yValue = (p) => p.x[1];
     const getClass = (p) => {
-      if (p.subpops == undefined)
-        return p.y == 1 ? "blue-poison" : "red-poison";
+      if (p.subpops == undefined) return p.y == 1 ? "blue-poison" : "red-poison";
       if (p.subpops.includes(spIndex)) return "target-point";
       else if (p.subpops.includes(hoverIndex)) return "selected-point";
       else if (p.y == 1) return "blue-point";
@@ -39,8 +38,7 @@
     };
     const getRadius = (p) => {
       if (p.subpops === undefined) return 4;
-      else if (p.subpops.includes(hoverIndex) || p.subpops.includes(spIndex))
-        return 5;
+      else if (p.subpops.includes(hoverIndex) || p.subpops.includes(spIndex)) return 5;
       else return 4;
     };
 
@@ -50,19 +48,11 @@
 
     let extentX = d3.extent(dset, xValue);
     extentX = [extentX[0] - 0.1, extentX[1] + 0.1];
-    const xScale = d3
-      .scaleLinear()
-      .domain(extentX)
-      .range([0, innerWidth])
-      .nice();
+    const xScale = d3.scaleLinear().domain(extentX).range([0, innerWidth]).nice();
 
     let extentY = d3.extent(dset, yValue);
     extentY = [extentY[0] - 0.1, extentY[1] + 0.1];
-    const yScale = d3
-      .scaleLinear()
-      .domain(extentY)
-      .range([innerHeight, 0])
-      .nice();
+    const yScale = d3.scaleLinear().domain(extentY).range([innerHeight, 0]).nice();
 
     const shadingG = d3
       .select(svg)
@@ -93,10 +83,7 @@
 
     const yAxisG = dsetG.append("g").call(yAxis);
 
-    const xAxisG = dsetG
-      .append("g")
-      .call(xAxis)
-      .attr("transform", `translate(0,${innerHeight})`);
+    const xAxisG = dsetG.append("g").call(xAxis).attr("transform", `translate(0,${innerHeight})`);
 
     let line = d3
       .line()
@@ -124,13 +111,9 @@
       .style("stroke-width", 5)
       .attr("clip-path", `url(#rect-clip${fID})`);
 
-    const belowArea = shadingG
-      .append("path")
-      .attr("clip-path", `url(#rect-clip${fID})`);
+    const belowArea = shadingG.append("path").attr("clip-path", `url(#rect-clip${fID})`);
 
-    const aboveArea = shadingG
-      .append("path")
-      .attr("clip-path", `url(#rect-clip${fID})`);
+    const aboveArea = shadingG.append("path").attr("clip-path", `url(#rect-clip${fID})`);
 
     let dsetScatter = dsetG
       .selectAll("circle")
@@ -148,8 +131,8 @@
 
     //--- figure interaction control ---//
     const updateClasses = () => {
-      poisonScatter.attr("class", getClass);
-      dsetScatter.attr("class", getClass);
+      poisonScatter.attr("class", getClass).attr("r", getRadius);
+      dsetScatter.attr("class", getClass).attr("r", getRadius);
     };
 
     const resetSlider = () => {
@@ -195,12 +178,8 @@
         .attr("x2", xScale(modelShape.boundary[1][0]))
         .attr("y1", yScale(modelShape.boundary[0][1]))
         .attr("y2", yScale(modelShape.boundary[1][1]));
-      belowArea
-        .attr("d", line(modelShape.below))
-        .attr("class", theta_t[1] < 0 ? "area-blue" : "area-red");
-      aboveArea
-        .attr("d", line(modelShape.above))
-        .attr("class", theta_t[1] < 0 ? "area-red" : "area-blue");
+      belowArea.attr("d", line(modelShape.below)).attr("class", theta_t[1] < 0 ? "area-blue" : "area-red");
+      aboveArea.attr("d", line(modelShape.above)).attr("class", theta_t[1] < 0 ? "area-red" : "area-blue");
     };
 
     const updateData = () => {
@@ -212,10 +191,7 @@
         .append("path")
         .attr("class", (d) => getClass(d))
         .attr("d", d3.symbol().type(d3.symbolCross).size(600))
-        .attr(
-          "transform",
-          (d) => `translate(${xScale(xValue(d))},${yScale(yValue(d))})`
-        )
+        .attr("transform", (d) => `translate(${xScale(xValue(d))},${yScale(yValue(d))})`)
         // .attr("cx", (d) => xScale(xValue(d)))
         // .attr("cy", (d) => yScale(yValue(d)));
         .transition()
@@ -237,8 +213,7 @@
       (x -= margin.left), (y -= margin.top);
       [x, y] = [xScale.invert(x), yScale.invert(y)];
       hoverIndex = delaunay.find(x, y, spIndex);
-      if (sqrdist(data.cluster_centers[hoverIndex], [x, y]) > 0.05)
-        hoverIndex = -1;
+      if (sqrdist(data.cluster_centers[hoverIndex], [x, y]) > 0.05) hoverIndex = -1;
       updateClasses();
     };
 
@@ -267,10 +242,7 @@
       updateModels();
     };
 
-    d3.select(canvas)
-      .on("mousemove", mousemoveHandler)
-      .on("click", clickHandler)
-      .on("mouseout", mouseoutHandler);
+    d3.select(canvas).on("mousemove", mousemoveHandler).on("click", clickHandler).on("mouseout", mouseoutHandler);
 
     d3.select(slider)
       .attr("max", nPoisons)
@@ -299,43 +271,22 @@
 </script>
 
 <svg bind:this={svg} {width} {height} class="overlay">
-  <text text-anchor="middle" x="50%" y="99%"
-    >{poisonIndex} / {nPoisons} Poisons</text
-  ></svg
+  <text text-anchor="middle" x="50%" y="99%">{poisonIndex} / {nPoisons} Poisons</text></svg
 >
 <canvas bind:this={canvas} {width} {height} />
-<button
-  bind:this={playButton}
-  class="button play-button"
-  style="cursor: pointer"
->
+<button bind:this={playButton} class="button play-button" style="cursor: pointer">
   <svg width="10" height="10" viewBox="0 0 10 10">
     <path d={svgPaths.pausePath} fill="#888" />
   </svg>
 </button>
-<button
-  bind:this={stepForwardButton}
-  class="button step-forward-button"
-  style="cursor: pointer"
->
+<button bind:this={stepForwardButton} class="button step-forward-button" style="cursor: pointer">
   <svg width="10" height="10" viewBox="0 0 10 10">
     <path d={svgPaths.stepForwardPath} fill="#888" />
   </svg>
 </button>
-<button
-  bind:this={stepBackButton}
-  class="button step-back-button"
-  style="cursor: pointer"
->
+<button bind:this={stepBackButton} class="button step-back-button" style="cursor: pointer">
   <svg width="10" height="10" viewBox="0 0 10 10">
     <path d={svgPaths.stepBackPath} fill="#888" />
   </svg>
 </button>
-<input
-  bind:this={slider}
-  type="range"
-  class="slider attack-slider"
-  min="0"
-  max="1"
-  value="0"
-/>
+<input bind:this={slider} type="range" class="slider attack-slider" min="0" max="1" value="0" />

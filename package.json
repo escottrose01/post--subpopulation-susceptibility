@@ -9,7 +9,9 @@
 	"dependencies": {
 		"core-js": "^3.21.1",
 		"d3": "^7.3.0",
+		"d3-contour": "^3.0.1",
 		"d3-delaunay": "^6.0.2",
+		"d3-geo": "^3.0.1",
 		"regenerator-runtime": "^0.13.9"
 	},
 	"devDependencies": {

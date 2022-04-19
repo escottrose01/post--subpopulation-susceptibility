@@ -32,6 +32,13 @@ d-figure.attackAnim {
   margin-right: auto;
 }
 
+d-figure.param-space-acc {
+  grid-column: text;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 d-figure.poison-demo {
   position: relative;
   grid-column: text;
@@ -282,6 +289,10 @@ d-figure.poison-demo {
   visibility: hidden;
 }
 
+.colorbar .tick line {
+  visibility: visible;
+}
+
 .input-container {
   position: absolute;
 }
@@ -359,19 +370,32 @@ d-figure.poison-demo {
   height: calc(100% - 32px);
 }
 
-.demo-stats-container {
+.summary-box-container, .demo-stats-container {
   position: absolute;
-  /* margin-top: 6px; */
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.2em;
-  /* margin-bottom: 0px;
-  margin-top: 0px; */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.summary-box-container {
+  pointer-events: visible;
+}
+
+.summary-box-scrollarea {
+  overflow-y: auto;
+  margin: 10px;
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
+}
+
+.summary-box-entry {
+  margin-right: 5px;
+  display: block;
 }
 
 .demo-stats-title {
@@ -429,4 +453,16 @@ d-figure.poison-demo {
   font-size: small;
   font-weight: bold;
   line-height: 12px;
+}
+
+.fig-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: large;
+}
+
+.fig-label-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  /* font-weight: bold; */
+  /* line-height: 12px; */
 }

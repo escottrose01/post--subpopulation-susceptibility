@@ -27,8 +27,8 @@
   let seed = 1;
   const nSamples = 128;
 
-  let svmClean = new SVM();
-  let svm = new SVM();
+  let svmClean = new SVM(64);
+  let svm = new SVM(64);
   let spIndex = 0;
   let hoverIndex = -1;
   let deleteIndex = -1;
@@ -612,10 +612,15 @@
 
 <div
   class="demo-stats-container"
-  style="left: {width - margin.right + 20}px; top:{margin.top}px; width:{margin.right - 40}px"
+  style="left: {width - margin.right + 20}px; top:{margin.top}px; width:{margin.right - 40}px; height:{innerHeight}px;"
 >
   <div style="margin-top:18px; height:auto;">
-    <p class="demo-stats-title">Clean Model</p>
+    <p class="demo-stats-title">
+      Clean Model
+      <svg style="width: 32px; height:12px; vertical-align:middle;">
+        <line style="stroke: darkgray; stroke-width: 16;" x1="0" x2="50" />
+      </svg>
+    </p>
     <div style="float:left;">
       <p class="demo-stats-entry">Overall accuracy:</p>
       <p class="demo-stats-entry">Subpop accuracy:</p>
@@ -629,7 +634,12 @@
   <div style="clear:both" />
 
   <div style="margin-top:24px;">
-    <p class="demo-stats-title">Poisoned Model</p>
+    <p class="demo-stats-title">
+      Poisoned Model
+      <svg style="width: 32px; height:12px; vertical-align:middle;">
+        <line style="stroke: black; stroke-width: 16;" x1="0" x2="50" />
+      </svg>
+    </p>
     <div style="float:left;">
       <p class="demo-stats-entry">Overall accuracy:</p>
       <p class="demo-stats-entry">Subpop accuracy:</p>
@@ -645,7 +655,12 @@
   <div style="clear:both" />
 
   <div id="targetModelStats" class="hidden" style="margin-top:24px;">
-    <p class="demo-stats-title">Target Model</p>
+    <p class="demo-stats-title">
+      Target Model
+      <svg style="width: 32px; height:12px; vertical-align:middle;">
+        <line style="stroke: rgba(0,0,0,0.5); stroke-width: 16; stroke-dasharray: 4 4" x1="0" x2="50" />
+      </svg>
+    </p>
     <div style="float:left;">
       <p class="demo-stats-entry">Overall accuracy:</p>
       <p class="demo-stats-entry">Subpop accuracy:</p>
@@ -659,5 +674,10 @@
   </div>
 
   <div style="clear:both" />
+
+  <div class="demo-stats-entry" style="position:absolute; bottom:10px">
+    <b> Attack objective: </b>
+    classify all orange points as positive (blue) label
+  </div>
 </div>
 <canvas bind:this={canvas} {width} {height} />
