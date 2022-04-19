@@ -47,7 +47,7 @@
 
     d3.select(svg)
       .append("image")
-      .attr("href", "/images/accuracy-contour.png")
+      .attr("href", "images/accuracy-contour.png")
       .attr("transform", `translate(${margin.left},${margin.top})`)
       .attr("width", innerWidth)
       .attr("height", innerHeight)
