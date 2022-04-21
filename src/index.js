@@ -8,6 +8,7 @@ import "core-js/stable";
 import AttackAnimation from "./diagrams/attack-animation.svelte";
 import PoisonDemo from "./diagrams/poisoning-demo.svelte";
 import ParameterSpace from "./diagrams/parameter-space.svelte";
+import DifficultyHistogram from "./diagrams/accuracy-difficulty-histogram.svelte";
 
 let fID = 0;
 const figureParams = [
@@ -62,7 +63,6 @@ const figureParams = [
           props: {
             scatterData: dataJson.clean_acc,
             key: "cleanacc",
-            // cleanAccuracies: dataJson.clean_acc,
           },
         });
       });
@@ -82,8 +82,23 @@ const figureParams = [
           props: {
             scatterData: dataJson.difficulty,
             key: "difficulty",
-            // cleanAccuracies: dataJson.difficulty,
           },
+        });
+      });
+  });
+}
+
+{
+  const figure = document.getElementById("svelte-acc-dif-hist-dfigure");
+  let scatterplot;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/accuracy-difficulty.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-acc-dif-hist-target");
+        scatterplot = new DifficultyHistogram({
+          target: target,
+          props: { data: JSON.parse(dataJson) },
         });
       });
   });

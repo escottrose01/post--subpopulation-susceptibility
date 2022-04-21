@@ -25,19 +25,23 @@ d-figure > figure {
   margin-bottom: 20;
 }
 
-d-figure.attackAnim {
+d-figure.attackAnim .param-space-acc .acc-dif-hist {
   grid-column: text;
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
-d-figure.param-space-acc {
+d-figure.acc-dif-hist .tick line {
+  visibility: visible;
+}
+
+/* d-figure.param-space-acc {
   grid-column: text;
   display: block;
   margin-left: auto;
   margin-right: auto;
-}
+} */
 
 d-figure.poison-demo {
   position: relative;
@@ -240,6 +244,69 @@ d-figure.poison-demo {
   cursor: pointer;
 }
 
+/* .slider-container {
+  background-color: #f2f2f9;
+} */
+
+/* .histogram-slider { */
+  /* position: absolute; */
+  /* border: 1px solid #AAB; */
+  /* background: #BCE; */
+  /* height: 100%; */
+  /* width: 58px; */
+  /* top: 0px; */
+  /* cursor: move; */
+/* } */
+
+.histogram-slider {
+  height: 16px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-animation: 0.2s;
+  transform: opacity 0.2s;
+  left: 40px;
+  width: calc(100% - 40px - 40px);
+  cursor: move;
+}
+
+.histogram-slider .slider {
+  background-color: #9AC;
+  height:100%;
+}
+
+/* .histogram-slider .box {
+  background-color: #9AC;
+} */
+
+.histogram-slider .handle {
+  position: absolute;
+  height: 32px;
+  width: 9px;
+  /* border: 1px solid #AAB; */
+  background: #9AC;
+
+  /* Support for bootstrap */
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+.histogram-slider .EE {
+  right: -4px;
+  cursor: e-resize;
+}
+
+.histogram-slider .WW {
+  cursor: w-resize;
+  left: -4px;
+}
+
+.histogram-slider .EE, .histogram-slider .WW {
+  top: 50%;
+  margin-top: -16px;
+}
+
 .button {
   position: absolute;
   height: 24px;
@@ -289,7 +356,7 @@ d-figure.poison-demo {
   visibility: hidden;
 }
 
-.colorbar .tick line {
+.colorbar .tick line, .histogram-slider .tick line {
   visibility: visible;
 }
 

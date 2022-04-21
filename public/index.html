@@ -31,19 +31,23 @@ d-figure > figure {
   margin-bottom: 20;
 }
 
-d-figure.attackAnim {
+d-figure.attackAnim .param-space-acc .acc-dif-hist {
   grid-column: text;
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
-d-figure.param-space-acc {
+d-figure.acc-dif-hist .tick line {
+  visibility: visible;
+}
+
+/* d-figure.param-space-acc {
   grid-column: text;
   display: block;
   margin-left: auto;
   margin-right: auto;
-}
+} */
 
 d-figure.poison-demo {
   position: relative;
@@ -246,6 +250,69 @@ d-figure.poison-demo {
   cursor: pointer;
 }
 
+/* .slider-container {
+  background-color: #f2f2f9;
+} */
+
+/* .histogram-slider { */
+  /* position: absolute; */
+  /* border: 1px solid #AAB; */
+  /* background: #BCE; */
+  /* height: 100%; */
+  /* width: 58px; */
+  /* top: 0px; */
+  /* cursor: move; */
+/* } */
+
+.histogram-slider {
+  height: 16px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-animation: 0.2s;
+  transform: opacity 0.2s;
+  left: 40px;
+  width: calc(100% - 40px - 40px);
+  cursor: move;
+}
+
+.histogram-slider .slider {
+  background-color: #9AC;
+  height:100%;
+}
+
+/* .histogram-slider .box {
+  background-color: #9AC;
+} */
+
+.histogram-slider .handle {
+  position: absolute;
+  height: 32px;
+  width: 9px;
+  /* border: 1px solid #AAB; */
+  background: #9AC;
+
+  /* Support for bootstrap */
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+.histogram-slider .EE {
+  right: -4px;
+  cursor: e-resize;
+}
+
+.histogram-slider .WW {
+  cursor: w-resize;
+  left: -4px;
+}
+
+.histogram-slider .EE, .histogram-slider .WW {
+  top: 50%;
+  margin-top: -16px;
+}
+
 .button {
   position: absolute;
   height: 24px;
@@ -295,7 +362,7 @@ d-figure.poison-demo {
   visibility: hidden;
 }
 
-.colorbar .tick line {
+.colorbar .tick line, .histogram-slider .tick line {
   visibility: visible;
 }
 
@@ -726,13 +793,6 @@ d-figure.poison-demo {
       </figure>
     </d-figure>
 
-    <d-figure id="svelte-param-space-dif-dfigure" class="param-space-acc">
-      <figure>
-        <div id="svelte-param-space-dif-target" style="pointer-events: none; text-align: center;"></div>
-        <figcaption>Average attack difficulty is roughly characterized by clean model accuracy, with more accurate models requiring more difficult attacks.</figcaption>
-      </figure>
-    </d-figure>
-
     <p>
       The overall trends in the plot make intuitive sense: clean model accuracy improves as the classes become more separated and exhibit less label noise.
     </p>
@@ -796,14 +856,12 @@ d-figure.poison-demo {
       As mentioned earlier, the properties that apply to the above two datasets should apply to all the datasets with either close class centers or high label noise. We can demonstrate this empirically by looking at the mean attack difficulty over the entire grid of dataset parameters:
     </p>
 
-    <figure style="text-align: center" id="difficulty-vs-params">
-      <svg height="448px" width="448px">
-        <image xlink:href="images/dataset-difficulty.png" height="448" width="448"></image>
-      </svg>
-      <figcaption>
-        Mean attack difficulty appears to be a function of the clean model accuracy. (Again, an interactive plot would be preferable)
-      </figcaption>
-    </figure>
+    <d-figure id="svelte-param-space-dif-dfigure" class="param-space-acc">
+      <figure>
+        <div id="svelte-param-space-dif-target" style="pointer-events: none; text-align: center;"></div>
+        <figcaption>Average attack difficulty is roughly characterized by clean model accuracy, with more accurate models requiring more difficult attacks.</figcaption>
+      </figure>
+    </d-figure>
 
     <p>
       It appears that the attacks against the datasets with poor clean models tend to be the easiest, and in general attack difficulty increases with clean model accuracy. The behavior is the most consistent with low accuracy clean models, since all attacks are easy and require few poisons. As the clean model accuracy increases, the behvaior becomes more complex and attack difficulty begins to depend on the properties of the subpopulation. Since attack difficulty is driven by the loss difference between the target and clean models, it makes sense to try to characterize the behavior of further examples in terms of this quantity.
@@ -866,6 +924,13 @@ d-figure.poison-demo {
     <p>
       Earlier we made the obseravation that attack difficulty tends to increase with clean model accuracy. To be a little more precise, we can see how the attack difficulty distribution changes as a function of clean model accuracy, for our attack setup.
     </p>
+
+    <d-figure id="svelte-acc-dif-hist-dfigure" class="acc-dif-hist">
+      <figure>
+        <div id="svelte-acc-dif-hist-target" style="pointer-events: none; text-align: center;"></div>
+        <figcaption>Caption</figcaption>
+      </figure>
+    </d-figure>
 
     <figure style="text-align: center" id="difficulty-accuracy">
       <svg height="336px" width="672px">
