@@ -7,7 +7,7 @@ import "core-js/stable";
 
 import AttackAnimation from "./diagrams/attack-animation.svelte";
 import PoisonDemo from "./diagrams/poisoning-demo.svelte";
-import ParameterSpaceAcc from "./diagrams/parameter-space-acc.svelte";
+import ParameterSpace from "./diagrams/parameter-space.svelte";
 
 let fID = 0;
 const figureParams = [
@@ -57,10 +57,32 @@ const figureParams = [
       .then((resp) => resp.json())
       .then((dataJson) => {
         const target = figure.querySelector("#svelte-param-space-acc-target");
-        scatterplot = new ParameterSpaceAcc({
+        scatterplot = new ParameterSpace({
           target: target,
           props: {
-            cleanAccuracies: dataJson.clean_acc,
+            scatterData: dataJson.clean_acc,
+            key: "cleanacc",
+            // cleanAccuracies: dataJson.clean_acc,
+          },
+        });
+      });
+  });
+}
+
+{
+  const figure = document.getElementById("svelte-param-space-dif-dfigure");
+  let scatterplot;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/avg-stats.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-param-space-dif-target");
+        scatterplot = new ParameterSpace({
+          target: target,
+          props: {
+            scatterData: dataJson.difficulty,
+            key: "difficulty",
+            // cleanAccuracies: dataJson.difficulty,
           },
         });
       });

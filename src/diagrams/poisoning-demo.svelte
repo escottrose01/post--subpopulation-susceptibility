@@ -159,7 +159,6 @@
       .attr("clip-path", `url(#rect-clip${fID})`);
 
     const belowArea = shadingG.append("path").attr("clip-path", `url(#rect-clip${fID})`);
-
     const aboveArea = shadingG.append("path").attr("clip-path", `url(#rect-clip${fID})`);
 
     let dsetScatter = dsetG

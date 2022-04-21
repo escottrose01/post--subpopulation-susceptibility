@@ -230,7 +230,14 @@
     <d-figure id="svelte-param-space-acc-dfigure" class="param-space-acc">
       <figure>
         <div id="svelte-param-space-acc-target" style="pointer-events: none; text-align: center;"></div>
-        <figcaption>The clean model performance is affected by the dataset parameters: as the classes become more separated and less noisy, the classifier is able to better separate them. Hover over points on the plot to see the datasets generated with each parameter combination.</figcaption>
+        <figcaption>The clean model performance is affected by the dataset parameters: as the classes become more separated and less noisy, the classifier is able to better separate them. Click points on the plot to see the datasets generated with each parameter combination.</figcaption>
+      </figure>
+    </d-figure>
+
+    <d-figure id="svelte-param-space-dif-dfigure" class="param-space-acc">
+      <figure>
+        <div id="svelte-param-space-dif-target" style="pointer-events: none; text-align: center;"></div>
+        <figcaption>Average attack difficulty is roughly characterized by clean model accuracy, with more accurate models requiring more difficult attacks.</figcaption>
       </figure>
     </d-figure>
 

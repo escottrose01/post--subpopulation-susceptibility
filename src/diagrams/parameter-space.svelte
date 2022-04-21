@@ -4,7 +4,23 @@
   import { ramp } from "../colorbar.js";
   import * as svgPaths from "../svg-paths.js";
 
-  export let cleanAccuracies;
+  export let scatterData;
+  export let key;
+
+  const config = {
+    cleanacc: {
+      title: "Average Clean Model Accuracy",
+      legendTitle: "Accuracy",
+      baseUrl: "https://escottrose01.github.io/poisoning-data/clean-models/",
+      ext: "png",
+    },
+    difficulty: {
+      title: "Average Attack Difficulty",
+      legendTitle: "Difficulty",
+      baseUrl: "https://escottrose01.github.io/poisoning-data/attack-webp/",
+      ext: "webp",
+    },
+  }[key];
 
   let canvas;
   let svg;
@@ -47,7 +63,7 @@
 
     d3.select(svg)
       .append("image")
-      .attr("href", "images/accuracy-contour.png")
+      .attr("href", `images/${key}-contour.png`)
       .attr("transform", `translate(${margin.left},${margin.top})`)
       .attr("width", innerWidth)
       .attr("height", innerHeight)
@@ -59,8 +75,8 @@
       .attr("text-anchor", "middle")
       .attr("alignment-baseline", "baseline")
       .attr("x", innerWidth / 2 + margin.left)
-      .attr("y", margin.top - 5)
-      .text("Average Clean Model Accuracy");
+      .attr("y", (2 * margin.top) / 3)
+      .text(config.title);
 
     const xAxis = d3.axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
     xAxis.tickValues(range(7).map((x, i) => i / 2));
@@ -89,7 +105,7 @@
     const xAxisG = scatterG.append("g").call(xAxis).attr("transform", `translate(0,${innerHeight})`);
     xAxisG.attr("class", "unselectable");
 
-    const scatterPoints = cleanAccuracies.reduce(
+    const scatterPoints = scatterData.reduce(
       (prev, cur, i) =>
         prev.concat(
           cur.map((t, j) => {
@@ -103,8 +119,9 @@
       []
     );
 
-    const color = d3.scaleSequential(d3.interpolateViridis).domain(d3.extent(scatterPoints, (d) => d.v).reverse());
-    const colorScale = d3.scaleLinear().domain([0.5, 1]).range([0, innerWidth]);
+    const scatterExtent = d3.extent(scatterPoints, (d) => d.v);
+    const color = d3.scaleSequential(d3.interpolateViridis).domain(scatterExtent.reverse()).nice();
+    const colorScale = d3.scaleLinear().domain(scatterExtent.reverse()).range([0, innerWidth]).nice();
 
     scaleG
       .append("image")
@@ -118,15 +135,9 @@
       .append("g")
       .attr("transform", "translate(0, 20)")
       .attr("class", "colorbar")
-      .call(
-        d3
-          .axisBottom(colorScale)
-          .tickSize(6)
-          .tickPadding(5)
-          .tickValues(range(6).map((x, i) => 0.5 + i / 10))
-      );
+      .call(d3.axisBottom(colorScale).tickSize(6).tickPadding(5));
 
-    scaleG.append("text").attr("class", "fig-label-text").attr("y", -5).text("Accuracy");
+    scaleG.append("text").attr("class", "fig-label-text").attr("y", -5).text(config.legendTitle);
 
     scatterG
       .selectAll("circle")
@@ -188,26 +199,9 @@
         .forEach((d, i) => {
           d3.select(d)
             .select("img")
-            .attr(
-              "src",
-              `https://escottrose01.github.io/poisoning-data/clean-models/${_alpha.toFixed(2)}-${_beta.toFixed(1)}-${
-                i + 1
-              }.png`
-            )
+            .attr("src", config.baseUrl + `${_alpha.toFixed(2)}-${_beta.toFixed(1)}-${i + 1}.${config.ext}`)
             .attr("alt", `${_alpha.toFixed(2)}-${_beta.toFixed(1)}-${i + 1}`);
         });
-
-      // async (d, i) => {
-      //   let data = await fetch(
-      //     `https://escottrose01.github.io/poisoning-data/clean-models/${_alpha.toFixed(2)}-${_beta.toFixed(1)}-${
-      //       i + 1
-      //     }.png`
-      //   )
-      //     .then((resp) => resp.blob())
-      //     .then((dataBlob) => dataBlob.text());
-
-      //   if (alpha === _alpha && beta === _beta) d.innerHTML = data;
-      // });
     };
 
     reloadDsets(alpha, beta);

@@ -7,6 +7,7 @@
 		"profile": "cross-env NODE_ENV=production webpack --profile --json > webpack-stats.json"
 	},
 	"dependencies": {
+		"@observablehq/plot": "^0.4.3",
 		"core-js": "^3.21.1",
 		"d3": "^7.3.0",
 		"d3-contour": "^3.0.1",
