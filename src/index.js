@@ -8,21 +8,22 @@ import "core-js/stable";
 import AttackAnimation from "./diagrams/attack-animation.svelte";
 import PoisonDemo from "./diagrams/poisoning-demo.svelte";
 import ParameterSpace from "./diagrams/parameter-space.svelte";
+import ParameterSpaceAttack from "./diagrams/parameter-space-attacks.svelte";
 import DifficultyHistogram from "./diagrams/accuracy-difficulty-histogram.svelte";
 
 let fID = 0;
 const figureParams = [
   {
     dset: "1.00-0.1-5",
-    subpop: 6,
+    subpop: 10,
   },
   {
     dset: "2.00-1.0-4",
     subpop: 6,
   },
   {
-    dset: "0.00-0.0-4",
-    subpop: 8,
+    dset: "0.00-0.0-7",
+    subpop: 1,
   },
   {
     dset: "2.00-0.0-4",
@@ -30,7 +31,7 @@ const figureParams = [
   },
   {
     dset: "2.00-0.0-4",
-    subpop: 0,
+    subpop: 3,
   },
 ];
 
@@ -77,7 +78,7 @@ const figureParams = [
       .then((resp) => resp.json())
       .then((dataJson) => {
         const target = figure.querySelector("#svelte-param-space-dif-target");
-        scatterplot = new ParameterSpace({
+        scatterplot = new ParameterSpaceAttack({
           target: target,
           props: {
             scatterData: dataJson.difficulty,

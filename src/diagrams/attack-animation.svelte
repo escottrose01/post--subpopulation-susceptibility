@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { sqrdist, getModelShape } from "../util.js";
+  import { range, sqrdist, getModelShape } from "../util.js";
   import * as svgPaths from "../svg-paths.js";
 
   export let initSpIndex;
@@ -79,7 +79,9 @@
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const xAxis = d3.axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
+    xAxis.tickValues(range(11).map((x, i) => i / 10));
     const yAxis = d3.axisLeft(yScale).tickSize(-innerWidth).tickPadding(10);
+    yAxis.tickValues(range(11).map((x, i) => i / 10));
 
     const yAxisG = dsetG.append("g").call(yAxis);
 

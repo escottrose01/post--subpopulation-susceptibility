@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { createD3RangeSlider } from "../slider.js";
 
   export let data;
 
@@ -126,6 +127,8 @@
       .call(d3.axisBottom(scale).tickSize(6).tickPadding(5));
 
     initialized = true;
+
+    initSlider();
   };
 
   const initSlider = () => {
@@ -142,13 +145,6 @@
     render();
   });
 </script>
-
-<svelte:head>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script
-    src="https://cdn.rawgit.com/RasmusFonseca/d3RangeSlider/master/d3RangeSlider.js"
-    on:load={() => initSlider()}></script>
-</svelte:head>
 
 <svg bind:this={svg} {width} {height} class="overlay unselectable" style="tick" />
 <canvas class="unselectable" {width} {height} />
