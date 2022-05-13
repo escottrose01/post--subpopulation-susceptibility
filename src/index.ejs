@@ -362,12 +362,19 @@
       We describe the difficulty of an attack against a dataset with $n$ datapoints which uses $p$ poisoning points as simply the ratio $p/n$. That is, the difficulty of an attack is the fraction of training points the attacker adds to the dataset.
     </p>
 
-    <d-figure id="svelte-acc-dif-hist-dfigure" class="acc-dif-hist">
+    <d-figure id="svelte-cleanacc-dif-hist-dfigure" class="acc-dif-hist">
       <figure>
-        <div id="svelte-acc-dif-hist-target" style="pointer-events: none; text-align: center;"></div>
+        <div id="svelte-cleanacc-dif-hist-target" style="pointer-events: none; text-align: center;"></div>
         <figcaption>Datasets with accurate clean models tend to produce attacks with a wider range of difficulties. Datasets with inaccurate clean models tend to produce easy attacks.</figcaption>
       </figure>
     </d-figure>
+
+    <!-- <d-figure id="svelte-targacc-dif-hist-dfigure" class="acc-dif-hist">
+      <figure>
+        <div id="svelte-targacc-dif-hist-target" style="pointer-events: none; text-align: center;"></div>
+        <figcaption>Subpopulation susceptibility can also be understood as a function of clean model performance on the target subpopulation.</figcaption>
+      </figure>
+    </d-figure> -->
 
     <h1>Adult Dataset</h1>
 

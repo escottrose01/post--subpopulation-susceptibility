@@ -90,13 +90,13 @@ const figureParams = [
 }
 
 {
-  const figure = document.getElementById("svelte-acc-dif-hist-dfigure");
+  const figure = document.getElementById("svelte-cleanacc-dif-hist-dfigure");
   let scatterplot;
   figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/accuracy-difficulty.json")
+    fetch("https://escottrose01.github.io/poisoning-data/cleanacc-difficulty.json")
       .then((resp) => resp.json())
       .then((dataJson) => {
-        const target = figure.querySelector("#svelte-acc-dif-hist-target");
+        const target = figure.querySelector("#svelte-cleanacc-dif-hist-target");
         scatterplot = new DifficultyHistogram({
           target: target,
           props: { data: JSON.parse(dataJson) },
@@ -104,6 +104,22 @@ const figureParams = [
       });
   });
 }
+
+// {
+//   const figure = document.getElementById("svelte-targacc-dif-hist-dfigure");
+//   let scatterplot;
+//   figure.addEventListener("ready", () => {
+//     fetch("https://escottrose01.github.io/poisoning-data/targacc-difficulty.json")
+//       .then((resp) => resp.json())
+//       .then((dataJson) => {
+//         const target = figure.querySelector("#svelte-targacc-dif-hist-target");
+//         scatterplot = new DifficultyHistogram({
+//           target: target,
+//           props: { data: JSON.parse(dataJson) },
+//         });
+//       });
+//   });
+// }
 
 for (let fig = 1; fig <= figureParams.length; ++fig) {
   const figure = document.getElementById(`svelte-scatterplot-dfigure-example${fig}`);
