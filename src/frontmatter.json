@@ -7,7 +7,20 @@
 			"affiliation": "University of Virginia",
 			"authorURL": "",
 			"affiliationURL": "https://engineering.virginia.edu/departments/computer-science"
+		},
+	    	{
+			"author": "Fnu Suya",
+			"affiliation": "University of Virginia",
+  		        "authorURL": "https://fsuya.org/",
+			"affiliationURL": "https://engineering.virginia.edu/departments/computer-science"
+		},
+		{
+			"author": "David Evans",
+			"affiliation": "University of Virginia",
+			"authorURL": "https://www.cs.virginia.edu/evans",
+			"affiliationURL": "https://engineering.virginia.edu/departments/computer-science"
 		}
+	    
 	],
 	"katex": {
 		"delimiters": [

@@ -20,7 +20,7 @@
 
   <d-title>
     <h1>Poisoning Attacks and Subpopulation Susceptibility</h1>
-    <p>Experiments on subpopulations vulnerable to poisoning attacks.</p>
+    <p>An Experimental Exploration on the Effectiveness of Poisoning Attacks</p>
   </d-title>
 
   <d-figure id="svelte-poison-demo-dfigure" class="poison-demo">
@@ -86,11 +86,12 @@
         </div>
       </div>
       <figcaption style="position:absolute; width: 380px; top:485px; left:594px; text-align: left;">
-        Machine learning is susceptible to poisoning attacks in which adversaries inject poisoned training data into the training set, usually to induce specific model behavior.
+	
+        Machine learning is susceptible to poisoning attacks in which
+        adversaries inject maliciously crafted training data into the
+        training set to induce specific model behavior.
 
-        In one type of attack, the subpopulation attack, the attacker's goal is to compromise the model's behavior only on a particular subset of the input space.
-
-        When attackers focus their efforts towards subpopulations of the data distribution, which subpopulations are the most vulnerable to an attack?
+        We focus on <em>subpopulation attacks</em>, in which the attacker's goal is to induce a model that produces a targeted and incorrect output (label <font color="steelblue">blue</font> in our demos) for a particular subset of the input space (colored <font color="gold">gold</font> [TODO:fix color to match diagram]). We study the question, <em>which subpopulations are the most vulnerable to an attack and why</em>?
         <figcaption>
     </figure>
   </d-figure>
