@@ -243,15 +243,25 @@
     stroke-width="0"
     border="none"
   />
+
   <rect
     x={margin.left}
-    y={innerHeight + margin.top + 100}
+    y={innerHeight + margin.top + 130}
     width={width - margin.left - 20}
-    height={margin.bottom - 110}
+    height={margin.bottom - 140}
     fill="white"
     stroke="#d3d3d3"
     stroke-width="2"
     rx="5"
+  />
+  <rect
+    x={margin.left + (width - margin.left - 20) / 2 - 40}
+    y={innerHeight + margin.top + 125}
+    width={80}
+    height={10}
+    fill="white"
+    stroke-width="0"
+    border="none"
   />
 </svg>
 <div class="overlay" style="left: {margin.left}; top: {margin.top}; width:{innerWidth}px; height:{innerHeight}px;">
@@ -280,9 +290,16 @@
     <input class="summary-box-entry" type="image" alt="" />
   </div>
 </div>
+
+<div
+  class="overlay"
+  style="left: {margin.left}px; width:{width - margin.left - 20}px; top:{-12.5 - 5 + innerHeight + margin.top + 130}px;"
+>
+  <p class="unselectable" style="font-size: large; margin:0px; line-height:30px">Attacks</p>
+</div>
 <div
   class="overlay summary-box-container"
-  style="top:{innerHeight + margin.top + 100}px; height:{margin.bottom - 120}px; left:{margin.left}px; width:{width -
+  style="top:{innerHeight + margin.top + 130}px; height:{margin.bottom - 155}px; left:{margin.left}px; width:{width -
     margin.left -
     20}px;"
 >
@@ -304,6 +321,5 @@
     <img class="item" alt="" />
     <img class="item" alt="" />
   </div>
-  <div><img alt="" /><img alt="" /><img alt="" /><img alt="" /><img alt="" /></div>
 </div>
 <canvas bind:this={canvas} style="pointer-events: none" {width} {height} />

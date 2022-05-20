@@ -266,7 +266,7 @@
 
     <p>
       <font color="red">
-        [Evan: My goal was to highlight the performance of the online attack and the importance of choosing a good target model (as to support our choice of attack framework), but you are right in your points. I'm thinking I should just remove the discission related to the alternative target model?]
+        [Evan: My goal was to highlight the performance of the online attack and the importance of choosing a good target model (as to support our choice of attack framework), but you are right in your points. I'm thinking we should just remove the discission related to the alternative target model?]
       </font>
     </p>
 
@@ -293,7 +293,7 @@
     </p>
 
     <p>
-      As mentioned earlier, the properties that apply to the above two datasets should apply to all the datasets with either close class centers or high label noise. We can demonstrate this empirically by looking at the mean attack difficulty over the entire grid of the dataset parameters:
+      As mentioned earlier, the properties that apply to the above two datasets should apply to all the datasets with either close class centers or high label noise. We can demonstrate this empirically by looking at the mean attack difficulty over the entire grid of the dataset parameters, where we describe the difficulty of an attack against a dataset of $n$ training samples that uses $p$ poisoning points using the ratio $p/n$. That is, the difficulty of an attack is the fraction of poisoning points added relative to the size of the original clean training set.
     </p>
 
     <d-figure id="svelte-param-space-dif-dfigure" class="param-space-acc">
@@ -337,10 +337,6 @@
 
     <p>
       In the previous section, we made the obseravation that attack difficulty tends to increase with clean model accuracy. To be a little more precise, we can see how the attack difficulty distribution changes as a function of clean model accuracy, for our attack setup.
-    </p>
-
-    <p>
-      We describe the difficulty of an attack against a dataset of $n$ training samples that uses $p$ poisoning points using the ratio $p/n$. That is, the difficulty of an attack is the fraction of poisoning points added relative to the size of the original clean training set.
     </p>
 
     <d-figure id="svelte-cleanacc-dif-hist-dfigure" class="acc-dif-hist">

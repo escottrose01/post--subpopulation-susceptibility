@@ -470,7 +470,7 @@ d-figure.poison-demo {
 
 .attack-summary-container {
   overflow-y: auto;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-left: 5px;
   margin-right: 10px;
 }
