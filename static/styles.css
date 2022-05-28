@@ -25,7 +25,7 @@ d-figure > figure {
   margin-bottom: 20;
 }
 
-d-figure.attackAnim .param-space-acc .acc-dif-hist {
+d-figure.attackAnim .param-space-acc .acc-dif-hist .dif-scatter {
   grid-column: text;
   display: block;
   margin-left: auto;

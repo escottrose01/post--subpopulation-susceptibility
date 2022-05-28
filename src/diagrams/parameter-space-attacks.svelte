@@ -155,7 +155,6 @@
               `${alpha.toFixed(2)}-${beta.toFixed(1)}-${seed}-${i}.webp`
           );
         });
-      console.log("POPULATING " + seed);
     };
 
     selectableG

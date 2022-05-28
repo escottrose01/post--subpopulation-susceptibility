@@ -10,6 +10,9 @@ import PoisonDemo from "./diagrams/poisoning-demo.svelte";
 import ParameterSpace from "./diagrams/parameter-space.svelte";
 import ParameterSpaceAttack from "./diagrams/parameter-space-attacks.svelte";
 import DifficultyHistogram from "./diagrams/accuracy-difficulty-histogram.svelte";
+import DifficultyScatterplot from "./diagrams/difficulty-scatterplot.svelte";
+import AdultHistogram from "./diagrams/adult-histogram.svelte";
+import AdultComparison from "./diagrams/adult-comparison.svelte";
 
 let fID = 0;
 const figureParams = [
@@ -91,13 +94,13 @@ const figureParams = [
 
 {
   const figure = document.getElementById("svelte-cleanacc-dif-hist-dfigure");
-  let scatterplot;
+  let histogram;
   figure.addEventListener("ready", () => {
     fetch("https://escottrose01.github.io/poisoning-data/cleanacc-difficulty.json")
       .then((resp) => resp.json())
       .then((dataJson) => {
         const target = figure.querySelector("#svelte-cleanacc-dif-hist-target");
-        scatterplot = new DifficultyHistogram({
+        histogram = new DifficultyHistogram({
           target: target,
           props: { data: JSON.parse(dataJson) },
         });
@@ -105,21 +108,101 @@ const figureParams = [
   });
 }
 
-// {
-//   const figure = document.getElementById("svelte-targacc-dif-hist-dfigure");
-//   let scatterplot;
-//   figure.addEventListener("ready", () => {
-//     fetch("https://escottrose01.github.io/poisoning-data/targacc-difficulty.json")
-//       .then((resp) => resp.json())
-//       .then((dataJson) => {
-//         const target = figure.querySelector("#svelte-targacc-dif-hist-target");
-//         scatterplot = new DifficultyHistogram({
-//           target: target,
-//           props: { data: JSON.parse(dataJson) },
-//         });
-//       });
-//   });
-// }
+{
+  const figure = document.getElementById("svelte-synth-scatter-dfigure");
+  let histogram;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/synth-scatter-stats.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-synth-scatter-target");
+        histogram = new DifficultyScatterplot({
+          target: target,
+          props: { data: JSON.parse(dataJson), fID: fID++ },
+        });
+      });
+  });
+}
+
+{
+  const figure = document.getElementById("svelte-adult-dif-hist-dfigure");
+  let histogram;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/adult-difficulty.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-adult-dif-hist-target");
+        histogram = new AdultHistogram({
+          target: target,
+          props: { data: dataJson },
+        });
+      });
+  });
+}
+
+{
+  const figure = document.getElementById("svelte-adult-scatter-dfigure");
+  let histogram;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/adult-scatter-stats.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-adult-scatter-target");
+        histogram = new DifficultyScatterplot({
+          target: target,
+          props: { data: JSON.parse(dataJson), fID: fID++ },
+        });
+      });
+  });
+}
+
+{
+  const figure = document.getElementById("svelte-adult-comparison1-dfigure");
+  let chart;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/adult-comparison1.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-adult-comparison1-target");
+        chart = new AdultComparison({
+          target: target,
+          props: { data: dataJson },
+        });
+      });
+  });
+}
+
+{
+  const figure = document.getElementById("svelte-adult-comparison2-dfigure");
+  let chart;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/adult-comparison2.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-adult-comparison2-target");
+        chart = new AdultComparison({
+          target: target,
+          props: { data: dataJson, title: "Adult Dataset Attack Difficulty, Similar Ambient Positivity" },
+        });
+      });
+  });
+}
+
+{
+  const figure = document.getElementById("svelte-adult-comparison3-dfigure");
+  let chart;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/adult-comparison3.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-adult-comparison3-target");
+        chart = new AdultComparison({
+          target: target,
+          props: { data: dataJson },
+        });
+      });
+  });
+}
 
 for (let fig = 1; fig <= figureParams.length; ++fig) {
   const figure = document.getElementById(`svelte-scatterplot-dfigure-example${fig}`);
