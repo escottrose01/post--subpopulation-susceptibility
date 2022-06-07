@@ -13,6 +13,7 @@ import DifficultyHistogram from "./diagrams/accuracy-difficulty-histogram.svelte
 import DifficultyScatterplot from "./diagrams/difficulty-scatterplot.svelte";
 import AdultHistogram from "./diagrams/adult-histogram.svelte";
 import AdultComparison from "./diagrams/adult-comparison.svelte";
+import AdultPositivity from "./diagrams/adult-positivity.svelte";
 
 let fID = 0;
 const figureParams = [
@@ -157,14 +158,30 @@ const figureParams = [
 }
 
 {
-  const figure = document.getElementById("svelte-adult-comparison1-dfigure");
+  const figure = document.getElementById("svelte-adult-comparison1A-dfigure");
   let chart;
   figure.addEventListener("ready", () => {
     fetch("https://escottrose01.github.io/poisoning-data/adult-comparison1.json")
       .then((resp) => resp.json())
       .then((dataJson) => {
-        const target = figure.querySelector("#svelte-adult-comparison1-target");
+        const target = figure.querySelector("#svelte-adult-comparison1A-target");
         chart = new AdultComparison({
+          target: target,
+          props: { data: dataJson },
+        });
+      });
+  });
+}
+
+{
+  const figure = document.getElementById("svelte-adult-comparison1B-dfigure");
+  let chart;
+  figure.addEventListener("ready", () => {
+    fetch("https://escottrose01.github.io/poisoning-data/adult-comparison1.json")
+      .then((resp) => resp.json())
+      .then((dataJson) => {
+        const target = figure.querySelector("#svelte-adult-comparison1B-target");
+        chart = new AdultPositivity({
           target: target,
           props: { data: dataJson },
         });

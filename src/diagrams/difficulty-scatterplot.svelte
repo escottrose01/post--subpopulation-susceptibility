@@ -26,22 +26,33 @@
   let scatterG;
 
   let xAxisLabel;
+  let titleLabel;
 
   const update = (choice) => {
     let ix;
-    let title;
-    if (choice === "Size") {
-      ix = sizeIx;
-      title = "Size";
-    } else if (choice === "Subpop Clean Accuracy") {
-      ix = cleanAccIx;
-      title = "Clean Accuracy";
-    } else if (choice === "Subpop Clean Loss") {
-      ix = cleanLossIx;
-      title = "Clean Loss";
-    } else if (choice === "Model Loss Difference") {
-      ix = lossDiffIx;
-      title = "Model Loss Difference";
+    switch (choice) {
+      case "Subpop Size":
+        ix = sizeIx;
+        xAxisLabel.text("Size");
+        titleLabel.text("Attack Difficulty vs. Subpopulation Size");
+        break;
+      case "Subpop Clean Accuracy":
+        ix = cleanAccIx;
+        xAxisLabel.text("Accuracy");
+        titleLabel.text("Attack Difficulty vs. Subpopulation Clean Accuracy");
+        break;
+      case "Subpop Clean Loss":
+        ix = cleanLossIx;
+        xAxisLabel.text("Loss");
+        titleLabel.text("Attack Difficulty vs. Subpopulation Clean Loss");
+        break;
+      case "Model Loss Difference":
+        ix = lossDiffIx;
+        xAxisLabel.text("Model Loss Difference");
+        titleLabel.text("Attack Difficulty vs. Model Loss Difference");
+        break;
+      default:
+        return;
     }
 
     let extentX = d3.extent(data, (d) => d[ix]);
@@ -54,8 +65,6 @@
 
     let xAxis = d3.axisBottom(xScale).tickPadding(15);
     xAxisG.transition().duration(800).call(xAxis);
-
-    xAxisLabel.text(title);
   };
 
   const render = () => {
@@ -91,7 +100,8 @@
 
     xAxisG = scatterG.append("g").call(xAxis).attr("transform", `translate(0,${innerHeight})`);
     yAxisG = scatterG.append("g").call(d3.axisLeft(yScale));
-    d3.select(svg)
+    titleLabel = d3
+      .select(svg)
       .append("text")
       .attr("class", "fig-title")
       .attr("text-anchor", "middle")
@@ -128,10 +138,10 @@
 </script>
 
 <select bind:this={selectButton} class="overlay" style="top:40px; left:{margin.left}px;">
-  <option value="size">Size</option>
+  <option value="size">Subpop Size</option>
   <option value="cleanacc">Subpop Clean Accuracy</option>
   <option value="cleanloss">Subpop Clean Loss</option>
   <option value="lossdiff">Model Loss Difference</option>
 </select>
-<svg bind:this={svg} {width} {height} class="overlay unselectable" style="tick; pointer-events: none;" />
+<svg bind:this={svg} {width} {height} class="overlay unselectable" style="pointer-events: none;" />
 <canvas class="unselectable" {width} {height} />

@@ -32,9 +32,13 @@ d-figure.attackAnim .param-space-acc .acc-dif-hist .dif-scatter {
   margin-right: auto;
 }
 
-d-figure.acc-dif-hist .tick line {
+d-figure.acc-dif-hist .tick line, d-figure.dif-scatter .tick line {
   visibility: visible;
 }
+
+/* d-figure.dif-scatter .tick line {
+  visibility: visible;
+} */
 
 /* d-figure.param-space-acc {
   grid-column: text;
@@ -524,6 +528,10 @@ d-figure.poison-demo {
   -ms-user-select: none;
   user-select: none;
 } */
+
+.legend {
+  font-size: smaller;
+}
 
 .unselectable {
   -webkit-touch-callout: none;

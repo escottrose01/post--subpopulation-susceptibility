@@ -17,7 +17,7 @@
     let yScale = d3
       .scaleLinear()
       .range([innerHeight, 0])
-      .domain([0, d3.max(data.values, (d) => d)])
+      .domain([0, d3.max(data.difficulties, (d) => d)])
       .nice();
 
     let chartG = d3.select(svg).append("g").attr("transform", `translate(${margin.left},${margin.top})`);
@@ -26,7 +26,7 @@
 
     chartG
       .selectAll("mybar")
-      .data(data.values)
+      .data(data.difficulties)
       .enter()
       .append("rect")
       .attr("x", (d, i) => xScale(data.descriptions[i]))
