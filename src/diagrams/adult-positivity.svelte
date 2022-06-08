@@ -12,7 +12,7 @@
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
-  const features = ["Positivity", "Loss Difference"];
+  const features = ["Ambient Positivity", "Model Loss Difference"];
 
   const render = () => {
     let xScale0 = d3.scaleBand().domain(data.descriptions).range([0, innerWidth]).padding(0.4);
@@ -40,22 +40,22 @@
       .data(data.positivities)
       .enter()
       .append("rect")
-      .attr("x", (d, i) => xScale0(data.descriptions[i]) + xScale1("Positivity"))
+      .attr("x", (d, i) => xScale0(data.descriptions[i]) + xScale1("Ambient Positivity"))
       .attr("y", (d) => yScaleLeft(d))
       .attr("width", xScale0.bandwidth() / 2)
       .attr("height", (d) => innerHeight - yScaleLeft(d))
-      .attr("fill", color("Positivity"));
+      .attr("fill", color("Ambient Positivity"));
 
     chartG
       .selectAll("mybar")
       .data(data.loss_diffs)
       .enter()
       .append("rect")
-      .attr("x", (d, i) => xScale0(data.descriptions[i]) + xScale1("Loss Difference"))
+      .attr("x", (d, i) => xScale0(data.descriptions[i]) + xScale1("Model Loss Difference"))
       .attr("y", (d) => yScaleRight(d))
       .attr("width", xScale0.bandwidth() / 2)
       .attr("height", (d) => innerHeight - yScaleRight(d))
-      .attr("fill", color("Loss Difference"));
+      .attr("fill", color("Model Loss Difference"));
 
     let xAxisG = chartG.append("g").call(xAxis).attr("transform", `translate(0,${innerHeight})`);
     let yAxisGLeft = chartG.append("g").call(d3.axisLeft(yScaleLeft));
@@ -63,14 +63,15 @@
       .append("g")
       .attr("transform", `translate(${innerWidth}, 0)`)
       .call(d3.axisRight(yScaleRight));
-    // d3.select(svg)
-    //   .append("text")
-    //   .attr("class", "fig-title")
-    //   .attr("text-anchor", "middle")
-    //   .attr("alignment-baseline", "baseline")
-    //   .attr("x", innerWidth / 2 + margin.left)
-    //   .attr("y", (2 * margin.top) / 3)
-    //   .text(title ? title : "Ambient Positivity and Model Loss Difference for Selected Subpopulations");
+    if (title)
+      d3.select(svg)
+        .append("text")
+        .attr("class", "fig-title")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "baseline")
+        .attr("x", innerWidth / 2 + margin.left)
+        .attr("y", (2 * margin.top) / 3)
+        .text(title);
     d3.select(svg)
       .append("text")
       .attr("class", "fig-label-text")
@@ -85,7 +86,7 @@
       .attr("transform", "rotate(-90)")
       .attr("y", 20)
       .attr("x", -margin.top - innerHeight / 2)
-      .text("Ambient Positivity");
+      .text("Positivity");
     d3.select(svg)
       .append("text")
       .attr("class", "fig-label-text")
@@ -93,7 +94,7 @@
       .attr("transform", "rotate(90)")
       .attr("y", -margin.left - innerWidth - 40)
       .attr("x", margin.top + innerHeight / 2)
-      .text("Model Loss Difference");
+      .text("Loss Difference");
 
     let legend = d3
       .select(svg)
@@ -109,7 +110,6 @@
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", color);
-
     legend
       .append("text")
       .attr("x", innerWidth - 54)
