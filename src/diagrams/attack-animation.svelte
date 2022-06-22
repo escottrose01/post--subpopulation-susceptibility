@@ -12,6 +12,7 @@
   let slider;
   let playButton;
   let stepForwardButton, stepBackButton;
+  let resetButton;
 
   let spIndex = initSpIndex;
   let hoverIndex = -1;
@@ -194,18 +195,9 @@
         .attr("class", (d) => getClass(d))
         .attr("d", d3.symbol().type(d3.symbolCross).size(600))
         .attr("transform", (d) => `translate(${xScale(xValue(d))},${yScale(yValue(d))})`)
-        // .attr("cx", (d) => xScale(xValue(d)))
-        // .attr("cy", (d) => yScale(yValue(d)));
         .transition()
         .duration(isPlaying ? 200 : 200)
         .attr("d", d3.symbol().type(d3.symbolCross).size(200));
-      // .transition()
-      // .duration(500)
-      // .attr(
-      //   "transform",
-      //   (d) =>
-      //     `translate(${xScale(xValue(d))},${yScale(yValue(d))})rotate(-45)`
-      // );
 
       poisonScatter.exit().remove();
     };
@@ -259,6 +251,11 @@
       slider.value = Math.max(+slider.value - 1, 0);
       sliderHandler(true);
     });
+    d3.select(resetButton).on("click", () => {
+      spIndex = -1;
+      hoverIndex = initSpIndex;
+      clickHandler();
+    });
 
     updateData();
     updateData(); // probably a bug somewhere, but need to do this twice for highlighting subpops to work for some reason
@@ -289,6 +286,11 @@
 <button bind:this={stepBackButton} class="button step-back-button" style="cursor: pointer">
   <svg width="10" height="10" viewBox="0 0 10 10">
     <path d={svgPaths.stepBackPath} fill="#888" />
+  </svg>
+</button>
+<button bind:this={resetButton} class="button reset-button" style="cursor: pointer">
+  <svg width="12" height="12" viewBox="0 -1 11 10">
+    <path d={svgPaths.resetPath} fill="#888" stroke="#888" stroke-width="1" />
   </svg>
 </button>
 <input bind:this={slider} type="range" class="slider attack-slider" min="0" max="1" value="0" />

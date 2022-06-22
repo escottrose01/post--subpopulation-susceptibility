@@ -111,7 +111,7 @@
     </p>
 
     <p>
-      Synthetic datasets are generated using dataset generation algorithms from Scikit-learn and resemble Gaussian mixtures with two components <d-cite key="scikit-learn"></d-cite>. Each of these datasets is controlled by a set of parameters, which captures different global dataset properties. The first dataset parameter is the class separation parameter $\alpha \ge 0$ which controls the distance between the two class centers. The second dataset parameter is the label noise parameter $\beta \in [0, 1]$ which controls the fraction of points whose labels are randomly assigned. The synthetic datasets are limited to just two features, so that direct visualizations of the attacks are possible.
+      Synthetic datasets are generated using dataset generation algorithms from Scikit-learn and resemble Gaussian mixtures with two components <d-cite key="scikit-learn"></d-cite>. Each of these datasets is controlled by a set of parameters, which captures different global dataset properties. The first dataset parameter is the class separation parameter $\alpha \ge 0$ which controls the distance between the two class centers. The second dataset parameter is the label noise parameter $\beta \in [0, 1]$ which controls the fraction of points whose labels are randomly assigned. The reason for varying the dataset parameters in our experiments is to determine how properties of the dataset affect poisoning attack difficulty. The synthetic datasets are limited to just two features, so that direct visualizations of the attacks are possible.
     </p>
 
     <d-figure style="text-align: center;" id="datasets">
@@ -124,11 +124,7 @@
     </d-figure>
 
     <p>
-      The reason for varying the dataset parameters in our experiments is to determine how properties of the dataset affect poisoning attack difficulty.
-    </p>
-
-    <p>
-      We also perform poisoning attacks against the UCI Adult dataset <d-cite key="Dua:2019"></d-cite>, which has been used previously in the evaluations of subpopulation poisoning attacks <d-cite key="suya2021modeltargeted, jagielski2021subpopulation"></d-cite>. The Adult dataset is of much higher dimension (57 after data transformations), and so the attack process cannot be visualized directly as in case of synthetic datasets. The purpose of this dataset is to gauge the attack behavior in a more complicated and practical setting.
+      We also perform poisoning attacks against the UCI Adult dataset <d-cite key="Dua:2019"></d-cite>, which has been used previously in the evaluations of subpopulation poisoning attacks <d-cite key="suya2021modeltargeted, jagielski2021subpopulation"></d-cite>. The Adult dataset is of much higher dimension (57 after data transformations), and so the attack process cannot be visualized directly as in the case of synthetic datasets. The purpose of this dataset is to gauge the attack behavior in a more complicated and practical setting.
     </p>
 
     <h3>Synthetic Dataset Parameter Space</h3>
@@ -161,7 +157,7 @@
     </p>
 
     <p>
-      Our choice of attack algorithm requires a target model as input. For our attacks, the required target model is generated using the label-flipping attack variant described in Koh et al.<d-cite key="koh2018stronger"></d-cite>, which is also used by Suya et al. in their experiments. For each subpopulation, we use the label-flipping attack to generate a collection of candidate classifiers (using different fraction and repetition number) which each achieve 0% accuracy (100% error rate) on the target subpopulation. Afterwards, the classifier with the lowest loss on the clean training set is chosen to be the target model, as done in Suya et al.<d-cite key="suya2021modeltargeted"></d-cite>. For our case, the attack terminates when the induced model misclassifies at least 50% of the target subpopulation, measured on the training set<d-footnote>Why do we terminate the attack after achieving only 50% attack success? In earlier experiments requiring 100% attack success, we observed that attack difficulty was often determined by outliers in the subpopulation. By relaxing the attack success requirement, we are able to capture the more essential properties of an attack against each subpopulation. Since our eventual goal is to characterize attack difficulty in terms of the properties of the targeted subpopulation (which outliers do not necessarily satisfy), this is a reasonable relaxation.</d-footnote>.
+      Our choice of attack algorithm requires a target model as input. For our attacks, the required target model is generated using the label-flipping attack variant described in Koh et al.<d-cite key="koh2018stronger"></d-cite>, which is also used by Suya et al. in their experiments. For each subpopulation, we use the label-flipping attack to generate a collection of candidate classifiers (using different fraction and repetition number) which each achieve 0% accuracy (100% error rate) on the target subpopulation. Afterwards, the classifier with the lowest loss on the clean training set is chosen to be the target model, as done in Suya et al.<d-cite key="suya2021modeltargeted"></d-cite>. For our case, the attack terminates when the induced model misclassifies at least 50% of the target subpopulation, measured on the test set<d-footnote>Why do we terminate the attack after achieving only 50% attack success? In earlier experiments requiring 100% attack success, we observed that attack difficulty was often determined by outliers in the subpopulation. By relaxing the attack success requirement, we are able to capture the more essential properties of an attack against each subpopulation. Since our eventual goal is to characterize attack difficulty in terms of the properties of the targeted subpopulation (which outliers do not necessarily satisfy), this is a reasonable relaxation.</d-footnote>.
     </p>
 
     <h1>Synthetic Datasets</h1>
@@ -174,18 +170,33 @@
       <figure>
         <div id="svelte-scatterplot-target" style="text-align: center;"></div>
       </figure>
-      <figcaption>The poisons are added sequentially to induce a model which misclassifies the orange points as positive (i.e., blue color).</figcaption>
+      <figcaption>The poisons are added sequentially to induce a model which misclassifies the orange points as positive (i.e., blue color). Hover over points in the animation to view different subpopulations targeted for this dataset, and click them to view a different attack. Since our discussion is based on the pre-selected subpopulation, the reset button in the bottom-right will return focus to the primary subpopulation of interest.</figcaption>
     </d-figure>
 
     <p>
       The above animation shows how the attack sequentially adds poisoning points into the training set to move the induced model towards the target model. Take note of how the poisoning points with positive labels work to reorient the model's decision boundary to cover the subpopulation while minimizing the impact on the rest of the dataset. This behavior also echos with the target model selection criteria mentioned above, which aims to minimize the loss on the clean training set while satisfying the attacker goal. Another possible way to generate the target model is to push the entire clean decision boundary downwards without reorienting it<d-footnote>i.e., the target model differs from the clean model only in the bias term.</d-footnote>, but this would have resulted in a model with higher loss on other parts of the dataset, and thus a higher loss difference to the clean model. Intuitively, such an alternative would experience more "resistance" from the dataset, preventing the induced model from moving as swiftly to the target.
     </p>
 
-    <p>
-      <font color="red">
-        [Evan: I am going to rerun the above attack with the alternative target model to verify that it actually performs worse with the online attack.]
-      </font>
-    </p>
+    <d-figure class="l-page-outset" style="display: inline-flex; justify-content: space-evenly; margin-top: 25px;">
+      <figure style="margin-left: 50px; max-width: 350px; flex: 1;">
+        <img src="images/altmodel-orig.png">
+        <figcaption><b>Left:</b> The target model generation algorithm chooses the candidate target model which minimizes the loss on the clean dataset while still satisfying the attacker objective.</figcaption>
+      </figure>
+      <figure style="margin-right: 50px; max-width: 350px; flex: 1">
+        <img src="images/altmodel-alt.png">
+        <figcaption><b>Right:</b> A poor choice of target model results in an unneccesarily difficult attack, since the model behavior changes on more than just the targeted subpopulation.</figcaption>
+      </figure>
+    </d-figure>
+
+    <!-- People may wonder why we choose the online model-targeted attack instead of simpler ones such as the label-flipping attacks. In our experiments, the model-targeted attacks were in general much more efficient than the label-flipping attacks to achieve the same attacker objective. Since our eventual goal is to describe attack difficulties by the (essential) number of poisons needed (i.e., number of poisoning points of optimal attacks), more efficient attacks serve as better proxy to the optimal poisoning attacks. Moreover, the model-targeted attack has nice theoretical properties and is a general enough framework to be worthy of study on its own. -->
+
+    <!-- <p>
+      Why do we mention this information? The choice of target model is an important consideration for our model-targeted attack, which we are using as a proxy 
+    </p> -->
+
+    <h1>Visualizations of Different Attack Difficulties</h1>
+
+    <h3>Low Attack Difficulty</h3>
 
     <d-figure id="svelte-scatterplot-dfigure-example2" class="attackAnim">
       <figure>
@@ -234,6 +245,8 @@
     <p>
       The next attack is easy for the attacker despite being against a dataset with an accurate clean model. The targeted subpopulation lies on the boundary of the class it belongs to, and more specifically the loss difference between the target and clean models is small. In other words, the attack causes very little "collateral damage."
     </p>
+
+    <h3>High Attack Difficulty</h3>
 
     <d-figure id="svelte-scatterplot-dfigure-example5" class="attackAnim">
       <figure>
@@ -399,6 +412,19 @@
       In the above example, the subpopulations possess very similar semantic descriptions, only differing in the value for the "relationship status" feature. Furthermore, the subpopulations are similarly sized with respect to the dataset (1.3% and 1.1% of the training set, respectively), and each subpopulation is perfectly classified by the clean model. Yet the first subpopulation required significantly more poisoning points, at least in the model-targeted attack.
     </p>
 
+    <h3>Adult Attack Animation</h3>
+
+    <p>
+      As we have mentioned, our poisoning attacks on the Adult dataset cannot be directly visualized. However, by utilizing dimensionality reduction algorithms, we can indirectly visualize the attacks by
+    </p>
+
+    <!-- <d-figure id="svelte-adult-dif-hist-dfigure" class="acc-dif-hist">
+      <figure>
+        <div id="svelte-adult-dif-hist-target" style="pointer-events: none; text-align: center;"></div>
+        <figcaption>Caption.</figcaption>
+      </figure>
+    </d-figure> -->
+
     <h1>Discussion</h1>
 
     <p>
@@ -419,7 +445,7 @@
   </d-article>
 
   <d-appendix>
-    <h1>Problem Setup</h1>
+    <!-- <h1>Problem Setup</h1>
 
     <p>
       We consider a binary prediction task $h : \mathcal{X} \rightarrow \mathcal{Y},$ where $\mathcal{X} \subseteq \mathbb{R}^d$ and $\mathcal{Y} = \{+1, -1\},$ and where the prediction model $h$ is characterized by the model parameters $\theta \in \Theta \subseteq \mathbb{R}^d.$ We denote the non-negative convex loss on a point $(x, y) \in \mathcal{X} \times \mathcal{Y}$ by $l(\theta; x, y)$, and define the loss over a set of points $A$ as $L(\theta; A) = \sum_{(x, y) \in A} l(\theta; x, y)$.
@@ -518,7 +544,12 @@
 
     <p>
       For the first set of experiments, we consider a family of synthetic datasets resembling Gaussian mixtures with two components. The datasets are controlled by two parameters, which we will refer to as the dataset parameters. The first dataset parameter is the class separation parameter $\alpha \ge 0$ which controls the distance between the two class centers. The second dataset parameter is the label noise parameter $\beta \in [0, 1]$ which controls the fraction of points whose labels are randomly assigned. For fixed dataset parameters, we generate several different datasets by feeding different random seeds. Each of the datasets generated contains $n=3000$ samples and is class-balanced. Each dataset is then divided into training and test sets in a 2:1 ratio.
-    </p>
+    </p> -->
+
+
+
+
+
     <!-- <h3>Acknowledgments</h3>
     <p>
       We are deeply grateful to...

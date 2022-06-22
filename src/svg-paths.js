@@ -8,3 +8,5 @@ export const playPath = "M 0 0 L 10 5 L 0 10 Z";
 export const pausePath = "M 0 0 L 0 10 L 3 10 L 3 0 Z M 6 0 L 6 10 L 9 10 L 9 0 Z";
 export const stepForwardPath = "M 0 0 L 3 0 L 9 5 L 3 10 L 0 10 L 0 10 L 6 5 L 0 0";
 export const stepBackPath = "M 9 0 L 6 0 L 0 5 L 6 10 L 9 10 L 9 10 L 3 5 L 9 0";
+export const resetPath =
+  "M5.9 9.2A4.1 4.1 90 101.9 5.1v2.1L.6 6 .2 6.5l2 2 2-2-.5-.5L2.5 7.2V5.1H2.5A3.4 3.4 90 115.9 8.5Z";
