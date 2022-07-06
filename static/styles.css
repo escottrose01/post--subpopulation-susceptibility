@@ -175,7 +175,6 @@ d-figure.poison-demo {
   transform: opacity 0.2s;
   left: 80px;
   width: calc(100% - 80px - 80px);
-  top: calc(100%);
 }
 .attack-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -323,22 +322,18 @@ d-figure.poison-demo {
 }
 
 .play-button {
-  top: calc(100% - 2px);
   left: 50px;
 }
 
 .step-forward-button {
-  top: calc(100% - 2px);
   right: calc(50px - 2.5px);
 }
 
 .step-back-button {
-  top: calc(100% - 2px);
   left: calc(50px - 32px);
 }
 
 .reset-button {
-  top: calc(100% - 2px);
   right: calc(50px - 32px - 2.5px);
 }
 

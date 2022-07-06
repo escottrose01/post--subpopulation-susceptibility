@@ -40,6 +40,7 @@ export function getModelShape(theta, xlim, ylim) {
       [0, 0],
     ];
   } else if (theta[1] === 0) {
+    return undefined; // unlikely edge case; ignore for now
   } else {
     let x1 = xlim[0];
     let x2 = xlim[1];
@@ -55,7 +56,8 @@ export function getModelShape(theta, xlim, ylim) {
       [x1, ylim[0]],
     ];
 
-    if (theta[1] === 0 && theta[0] === 0);
+    // helps with stability
+    if (y1 < ylim[0] && y2 < ylim[0]);
     else if (y1 > ylim[1] && y2 > ylim[1]) [above, below] = [below, above];
     else {
       below = [

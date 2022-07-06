@@ -24,6 +24,7 @@ const figureParams = [
   {
     dset: "2.00-1.0-4",
     subpop: 6,
+    links: [["lowercluster", 1]],
   },
   {
     dset: "0.00-0.0-7",
@@ -31,10 +32,14 @@ const figureParams = [
   },
   {
     dset: "2.00-0.0-4",
-    subpop: 4,
+    subpop: 1,
+    links: [
+      ["dif850", 3],
+      // ["asymmetric", 4],
+    ],
   },
   {
-    dset: "2.00-0.0-4",
+    dset: "3.00-0.0-9",
     subpop: 3,
   },
 ];
@@ -234,6 +239,7 @@ for (let fig = 1; fig <= figureParams.length; ++fig) {
           props: {
             data: dataJson,
             initSpIndex: figureParams[fig - 1].subpop,
+            links: figureParams[fig - 1].links,
             fID: fID++,
           },
         });

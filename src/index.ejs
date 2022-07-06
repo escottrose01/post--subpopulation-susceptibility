@@ -153,11 +153,15 @@
     <h1>Poisoning Attacks</h1>
 
     <p>
-      We use the <em>model-targeted</em> poisoning attack design from Suya et al. <d-cite key="suya2021modeltargeted"></d-cite>, which is shown to have state-of-the-art performance on subpopulation attacks. In a model-targeted poisoning attack, the attacker's objective is captured in a target model. The goal is to induce a model as close as possible to that target model. By describing the objective using a target model, complex objectives can be captured without needing to design customized attacks. Since the attack is online, poisons can be added into the training set until the attack objective is satisfied, giving a natural measure of the attack's difficulty in terms of the number of poisons added during the attack.
+      We use the <a id="attack-algo-return" href="#attack-algo"><em>model-targeted</em> poisoning attack</a> design from Suya et al. <d-cite key="suya2021modeltargeted"></d-cite>, which is shown to have state-of-the-art performance on subpopulation attacks. In a model-targeted poisoning attack, the attacker's objective is captured in a target model. The goal is to induce a model as close as possible to that target model. By describing the objective using a target model, complex objectives can be captured without needing to design customized attacks. Since the attack is online, poisons can be added into the training set until the attack objective is satisfied, giving a natural measure of the attack's difficulty in terms of the number of poisons added during the attack.
     </p>
 
     <p>
       Our choice of attack algorithm requires a target model as input. For our attacks, the required target model is generated using the label-flipping attack variant described in Koh et al.<d-cite key="koh2018stronger"></d-cite>, which is also used by Suya et al. in their experiments. For each subpopulation, we use the label-flipping attack to generate a collection of candidate classifiers (using different fraction and repetition number) which each achieve 0% accuracy (100% error rate) on the target subpopulation. Afterwards, the classifier with the lowest loss on the clean training set is chosen to be the target model, as done in Suya et al.<d-cite key="suya2021modeltargeted"></d-cite>. For our case, the attack terminates when the induced model misclassifies at least 50% of the target subpopulation, measured on the test set<d-footnote>Why do we terminate the attack after achieving only 50% attack success? In earlier experiments requiring 100% attack success, we observed that attack difficulty was often determined by outliers in the subpopulation. By relaxing the attack success requirement, we are able to capture the more essential properties of an attack against each subpopulation. Since our eventual goal is to characterize attack difficulty in terms of the properties of the targeted subpopulation (which outliers do not necessarily satisfy), this is a reasonable relaxation.</d-footnote>.
+    </p>
+
+    <p>
+      Since we want to describe attack difficulties by the (essential) number of poisons needed (i.e., the number of poisoning points of optimal attacks), more efficient attacks serve as better proxy to the optimal poisoning attacks. To achieve the reported state-of-the-art performance from our chosen attack algorithm, it is important to choose a suitable target model. In our experiments, this performance is achieved by selecting target models according to the criteria above. This selection criteria is also justifed based on the <a id="attack-algo-theoretical-return" href="#attack-algo-theoretical">theoretical properties of the attack framework</a>.
     </p>
 
     <h1>Synthetic Datasets</h1>
@@ -169,8 +173,8 @@
     <d-figure id="svelte-scatterplot-dfigure-example1" class="attackAnim">
       <figure>
         <div id="svelte-scatterplot-target" style="text-align: center;"></div>
+        <figcaption>The poisons are added sequentially to induce a model which misclassifies the orange points as positive (i.e., blue color). Hover over points in the animation to view different subpopulations targeted for this dataset, and click them to view a different attack. Since our discussion is based on the pre-selected subpopulation, the reset button in the bottom-right will return focus to the primary subpopulation of interest.</figcaption>
       </figure>
-      <figcaption>The poisons are added sequentially to induce a model which misclassifies the orange points as positive (i.e., blue color). Hover over points in the animation to view different subpopulations targeted for this dataset, and click them to view a different attack. Since our discussion is based on the pre-selected subpopulation, the reset button in the bottom-right will return focus to the primary subpopulation of interest.</figcaption>
     </d-figure>
 
     <p>
@@ -184,40 +188,55 @@
       </figure>
       <figure style="margin-right: 50px; max-width: 350px; flex: 1">
         <img src="images/altmodel-alt.png">
-        <figcaption><b>Right:</b> A poor choice of target model results in an unneccesarily difficult attack, since the model behavior changes on more than just the targeted subpopulation.</figcaption>
+        <figcaption><b>Right:</b> A poor choice of target model results in an unneccesarily difficult attack, since poisons are wasted preserving unimportant behavior of the target model.</figcaption>
       </figure>
     </d-figure>
 
-    <!-- People may wonder why we choose the online model-targeted attack instead of simpler ones such as the label-flipping attacks. In our experiments, the model-targeted attacks were in general much more efficient than the label-flipping attacks to achieve the same attacker objective. Since our eventual goal is to describe attack difficulties by the (essential) number of poisons needed (i.e., number of poisoning points of optimal attacks), more efficient attacks serve as better proxy to the optimal poisoning attacks. Moreover, the model-targeted attack has nice theoretical properties and is a general enough framework to be worthy of study on its own. -->
-
-    <!-- <p>
-      Why do we mention this information? The choice of target model is an important consideration for our model-targeted attack, which we are using as a proxy 
-    </p> -->
+    <p>
+      The above comparison demonstrates the importance of choosing a good target model and illustrates the target model selection criteria. By using a target model which minimizes loss on the clean dataset, the attack algorithm is more likely to add poisons that directly contribute to the underlying attack objective. On the other hand, using a poor target model causes the attack algorithm to choose points which preserve unimportant target model behavior on other parts of the dataset.
+    </p>
 
     <h1>Visualizations of Different Attack Difficulties</h1>
 
-    <h3>Low Attack Difficulty</h3>
+    <p>
+      Now that we have described the basic setup for performing subpopulation poisoning attacks using the online attack algorithm, we can start to study specific examples of poisoning attacks in order to understand what affects their difficulties.
+    </p>
+
+    <h3>Easy Attacks with High Label Noise</h3>
+
+    <p>
+      Let's look at a low-difficulty attack. The below dataset exhibits a large amount of label noise $(\beta = 1)$, and as a result the clean model performs very poorly. When the poisoning points are added, the model is quickly persuaded to change its decision with respect to the target subpopulation.
+    </p>
 
     <d-figure id="svelte-scatterplot-dfigure-example2" class="attackAnim">
       <figure>
         <div id="svelte-scatterplot-target" style="text-align: center;"></div>
+        <figcaption>An attack against a dataset with high label noise is easy, and one possible reason is the clean model may not be heavily influenced by the points in the clean training set.</figcaption>
       </figure>
-      <figcaption>An attack against a dataset with high label noise is easy, and one possible reason is the clean model may not be heavily influenced by the points in the clean training set.</figcaption>
     </d-figure>
 
     <p>
-      Let's look at a low-difficulty attack. The above dataset exhibits a large amount of label noise, and as a result the clean model performs very poorly. When the poisoning points are added, the model is quickly persuaded to change its decision with respect to the target subpopulation. Observe that the poisoned model labels all points in the training set as positive, with the corresponding decision boundary lying out of view. In other words, the attack is changing not just the model behavior local to the target subpopulation, but also the global behavior of the model.
+      In this particular example, there is a slight class imbalance due to dividing the dataset into train and test sets (963 positive points and 1037 negative points). As a result of this and the label noise, the clean model chooses to classify all points as the majority (negative) label.
     </p>
+
+    <p>
+      One interesting observation in this example is that despite the overall easy attacks, attack difficulty still varies somewhat consistently based on the targeted subpopulation's location with respect to the rest of the dataset. Selecting other subpopulations in the animation reveals that subpopulations near the center of the dataset tend to be harder to attack, while subpopulations closer to the edge of the dataset are more vulnerable. This behavior is especially apparent with <a id="lowercluster" href="#svelte-scatterplot-dfigure-example2">this subpopulation</a> in the lower cluster, where the induced model ends up awkwardly wedged between the two clusters (now referring to the two main "clusters" composing the dataset).
+    </p>
+
+    <!-- Old explanation, now invalid: the below outcome only happened as a result of the training convergence issues we experienced in earlier experiments -->
+    <!-- Observe that the poisoned model labels all points in the training set as positive, with the corresponding decision boundary lying out of view. In other words, the attack is changing not just the model behavior local to the target subpopulation, but also the global behavior of the model. -->
+
+    <h3>Easy Attacks with Small Class Separation</h3>
 
     <d-figure id="svelte-scatterplot-dfigure-example3" class="attackAnim">
       <figure>
         <div id="svelte-scatterplot-target" style="text-align: center;"></div>
+        <figcaption>An attack against a dataset with close class centers is easy, since the linear SVM model does not have sufficient capacity to perform well on the clean training set.</figcaption>
       </figure>
-      <figcaption>An attack against a dataset with close class centers is easy, since the linear SVM model does not have sufficient capacity to perform well on the clean training set.</figcaption>
     </d-figure>
 
     <p>
-      The next example shows an attack result similar to the noisy dataset shown above, but now the reason is slightly different: although the clean training set now has small label noise, the model does not have enough capacity to generate a useful classification function. The end result is the same: poisoning points can strongly influence the behavior of the model. Note that in both of the above examples, the two classes are balanced; if the labels of the two classes are represented in a different ratio, the clean model may prefer to classify all points as the dominant label, and the attack difficulty of misclassifying target subpopulation into the minority label may also significantly increase.
+      The next example shows an attack result similar to the noisy dataset shown above, but now the reason is slightly different: although the clean training set now has small label noise, the model does not have enough capacity to generate a useful classification function. The end result is the same: poisoning points can strongly influence the behavior of the model. Note that in both of the above examples, the two classes are (almost) balanced; if the labels of the two classes are represented in a different ratio, the clean model may prefer to classify all points as the dominant label, and the attack difficulty of misclassifying target subpopulation into the minority label may also significantly increase.
     </p>
 
     <p>
@@ -232,31 +251,51 @@
     </d-figure>
 
     <p>
-      It appears that the attacks against datasets with poorly performing clean models tend to be easier than others, and in general attack difficulty increases with clean model accuracy. The behavior is most consistent with clean models of low accuracies, since all attacks are easy and require only a few poisoning points. As the clean model accuracy increases, the behavior becomes more complex and attack difficulty begins to depend more on the properties of the target subpopulation. Since attack difficulty is driven by the loss difference between the target and clean models, it makes sense to try to characterize the behavior of further examples in terms of this quantity.
+      It appears that the attacks against datasets with poorly performing clean models tend to be easier than others, and in general attack difficulty increases with clean model accuracy. The behavior is most consistent with clean models of low accuracies, since all attacks are easy and require only a few poisoning points. As the clean model accuracy increases, the behavior becomes more complex and attack difficulty begins to depend more on the properties of the target subpopulation.
+    </p>
+
+    <!-- Since attack difficulty is driven by the loss difference between the target and clean models, it makes sense to try to characterize the behavior of further examples in terms of this quantity. -->
+
+    <h3>Attacks on Datasets with Accurate Clean Models</h3>
+
+    <p>
+      Next, we look at specific examples of datasets with more interesting attack behavior. In the below example, the dataset admits an accurate clean model which confidently separates the two classes.
     </p>
 
     <d-figure id="svelte-scatterplot-dfigure-example4" class="attackAnim">
       <figure>
         <div id="svelte-scatterplot-target" style="text-align: center;"></div>
+        <figcaption>An attack against the edge of a cluster is easy, especially if causes little collateral damage. On the other hand, an attack against the center of a cluster is hard, since the subpopulation is "protected" by surrounding data.</figcaption>
       </figure>
-      <figcaption>An attack with low collateral damage is easy, since the loss difference between the target and clean models is small.</figcaption>
     </d-figure>
 
     <p>
-      The next attack is easy for the attacker despite being against a dataset with an accurate clean model. The targeted subpopulation lies on the boundary of the class it belongs to, and more specifically the loss difference between the target and clean models is small. In other words, the attack causes very little "collateral damage."
+      The first attack is easy for the attacker despite being against a dataset with an accurate clean model. The targeted subpopulation lies on the boundary of the cluster it belongs to, and more specifically the loss difference between the target and clean models is small. In other words, the attack causes very little "collateral damage."
     </p>
 
-    <h3>High Attack Difficulty</h3>
+    <p>
+      Now, consider <a id="dif850" href="#svelte-scatterplot-dfigure-example4">this subpopulation</a> in the middle of the cluster. This is our first example of an exceptionally difficult attack, requiring over 800 poisons. The loss difference between the target and clean models is high since the target model misclassifies a large number of points in the negative class. Notice that it seems hard even to produce a target model against this subpopulation which does not cause a large amount of collateral damage. In some sense, the subpopulation is well protected and is more robust against poisoning attacks due to its central location.
+    </p>
+
+    <!-- <p>
+      In the above dataset, attack difficulty appears to be influenced in a more subtle way as well: while generally attacks get easier as the targeted subpopulation approaches the edge of the cluster, difficulties are not perfectly symmetric across the cluster. For example, contrast <a id="asymmetric" href="#svelte-scatterplot-dfigure-example4">this subpopulation</a> at the top (150 poisons) with the first (60 poisons). Even though both subpopulations are located at the extremes of the cluster, the one at the top induces a model which cuts more sharply into the positive points.
+    </p> -->
+
+    <!-- <h3>Hard Attack with High Collateral Damage</h3> -->
+
+    <p>
+      For variety, let's examine attacks against another dataset with an accurate target model.
+    </p>
 
     <d-figure id="svelte-scatterplot-dfigure-example5" class="attackAnim">
       <figure>
         <div id="svelte-scatterplot-target" style="text-align: center;"></div>
+        <!-- <figcaption></figcaption> -->
       </figure>
-      <figcaption>An attack against the center of a cluster is hard, since the subpopulation is "protected" by surrounding data.</figcaption>
     </d-figure>
 
     <p>
-      This is our first example of an exceptionally difficult attack, requiring over 800 poisons. The loss difference between the target and clean models is high, since the target model misclassifies a large number of points in the negative class. Notice that it seems hard to even produce a target model which does not cause a large amount of collateral damage. In some sense, the subpopulation is well protected and is more robust against poisoning attacks due to its central location.
+      Just as before, attack difficulty varies widely depending on the choice of subpopulation, and furthermore attack difficulty can largely be understood by examining the location of the subpopulation with respect to the rest of the dataset.
     </p>
 
     <h3>Quantitative Analysis</h3>
@@ -284,10 +323,6 @@
       Of course, it is desirable to know more than just whether or not it is possible for attack difficulty to vary based on the dataset and clean model. Our real objective is to determine what properties of the subpopulation affect attack difficulty, and how. One way to do this is to gather a numerical description of the targeted subpopulation, and use that data to predict attack difficulty.
     </p>
 
-    <!-- <p>
-      Lead into the plot below . . .
-    </p> -->
-
     <d-figure id="svelte-synth-scatter-dfigure" class="dif-scatter">
       <figure>
         <div id="svelte-synth-scatter-target" style="text-align: center;"></div>
@@ -295,16 +330,18 @@
       </figure>
     </d-figure>
 
-    <!-- explain the plot above . . . -->
-    <!-- <p>
-
-    </p> -->
+    <p>
+      As expected, model loss difference strongly correlates with attack difficulty. Other numerical factors describing subpopulations, like subpopulation size, do not have clear correlations with attack difficulty. It is possible that complex interaction between different subpopulation properties might correlate strongly with attack difficulty, and are worth future investigation.
+    </p>
+    <!-- While this statistic is specific to a model-targeted attack, it is still a useful first attempt at understanding what factors contribute to subpopulation susceptibility. If there exist target models which achieve the attacker's goal without greatly impacting loss on the clean dataset, then it might be possible to find an easy, hard-to-detect poisoning attack against that subpopulation. On the other hand, if it is difficult even to find a suitable target model which does not inflict heavy damage on the clean dataset, then there is reason to believe that an attack against the subpopulation is more difficult in an essential way. -->
 
     <h1>Adult Dataset</h1>
 
     <p>
       While the visualizations made possible by the synthetic datasets are useful for developing an intuition for subpopulation poisoning attacks, it is desirable to see how subpopulation susceptibility arises in a more complex and practical setting. For this purpose, we perform subpopulation poisoning attacks against the UCI Adult dataset, whose associated classification task is to determine whether an adult's income exceeds $50,000 per year based on attributes like education, age, race, martial status, etc.
     </p>
+
+    <h3>Subpopulation Formation</h3>
 
     <p>
       Subpopulations for the Adult dataset are selected using semantic generation. To generate a semantic subpopulation, first a subset of categorical features is selected, and specific values are chosen for those features. For example, the categorical features could be chosen to be "work class" and "education level", and the features' values could then be chosen to be "never worked" and "some college", respectively. Then, every negative-label ("$\le$ 50K") instance in the training set matching all of the (feature, label) pairs is extracted to form the subpopulation. The subpopulations for our experiments are chosen by considering every subset of categorical features and every combination of those features which is realized in the training set. For simplicity, we only consider subpopulations with a maximum of three feature selections.
@@ -313,6 +350,8 @@
     <p>
       In total, 4,338 subpopulations were formed using this method. Each of these subpopulations was attacked using the same strategy as the synthetic subpopulations. Of these attacks, 1,602 were trivial (the clean model satisfied the attack objective), leaving 2,736 nontrivial attacks.
     </p>
+
+    <h3>Quantitative Analysis</h3>
 
     <p>
       Just as with the synthetic datasets, we can examine the attack difficulty distribution for all the nontrivial attacks:
@@ -343,8 +382,10 @@
     <h3>Semantic Subpopulation Characteristics</h3>
 
     <p>
-      Recall that our goal is to determine how subpopulation characteristics affect attack difficulty. While this question can be posed in terms of the statistical properties of the subpopulation (e.g., by examining its size or label ratio), it is also interesting to ask which semantic properties of the subpopulation contribute to attack difficulty. In this section, we explore the relationships between attack difficulty and the semantic properties of the targted subpopulation.
+      Recall that our goal is to determine how subpopulation characteristics affect attack difficulty. While this question can be posed in terms of the statistical properties of the subpopulation (e.g., by examining its size), it is also interesting to ask which semantic properties of the subpopulation contribute to attack difficulty. In this section, we explore the relationships between attack difficulty and the semantic properties of the targted subpopulation.
     </p>
+
+    <h5>Ambient Positivity</h5>
 
     <p>
       To start, we can compare a few attacks from our experiments on the Adult datastet.
@@ -368,7 +409,7 @@
     <d-figure id="svelte-adult-comparison1B-dfigure" class="acc-dif-hist">
       <figure>
         <div id="svelte-adult-comparison1B-target" style="pointer-events: none; text-align: center;"></div>
-        <figcaption>In some cases, ambient positivity is an indicator of attack difficulty.</figcaption>
+        <figcaption>In some cases, ambient positivity is an indicator of attack difficulty, especially if it relates to model loss difference.</figcaption>
       </figure>
     </d-figure>
 
@@ -384,7 +425,7 @@
     </d-figure>
 
     <p>
-      Are these differences in attack difficulties just outliers due to our particular experiment setup, or is there some essential difference between the subpopulations which is not captured by their numerical descriptions? Furthermore, if such differences do exist, can they be described using the natural semantic meaning of the subpopulations?
+      Once again, the above subpopulations are all classified with 100% accuracy by the clean model and are of similar sizes. Are these differences in attack difficulties just outliers due to our particular experiment setup, or is there some essential difference between the subpopulations which is not captured by their numerical descriptions? Furthermore, if such differences do exist, can they be described using the natural semantic meaning of the subpopulations?
     </p>
 
     <!-- by feature -->
@@ -396,6 +437,8 @@
     <!-- <p>
       We should also be able to determine which groups (as described by categorical features of a dataset) are generally more susceptible to a poisoning attack, even when the precise subpopulation can vary. One way to gauge this behavior 
     </p> -->
+
+    <h5>Pairwise Analysis</h5>
 
     <p>
       What happens when two semantic subpopulations match on the same features, but differ in only a single feature's value? For example, consider the two attacks below:
@@ -412,11 +455,17 @@
       In the above example, the subpopulations possess very similar semantic descriptions, only differing in the value for the "relationship status" feature. Furthermore, the subpopulations are similarly sized with respect to the dataset (1.3% and 1.1% of the training set, respectively), and each subpopulation is perfectly classified by the clean model. Yet the first subpopulation required significantly more poisoning points, at least in the model-targeted attack.
     </p>
 
-    <h3>Adult Attack Animation</h3>
+    <h3>Adult Dataset Summary</h3>
+
+    <p>
+      Our experiments demonstrate that poisoning attack difficulty can vary widely in a practical setting. Although we cannot identify all the characteristics that relate to attack difficulty, we can characterize some of them accurately for certain groups of subpopulations, giving the first attempt in understanding this complicated problem.
+    </p>
+
+    <!-- <h3>Adult Attack Animation</h3>
 
     <p>
       As we have mentioned, our poisoning attacks on the Adult dataset cannot be directly visualized. However, by utilizing dimensionality reduction algorithms, we can indirectly visualize the attacks by
-    </p>
+    </p> -->
 
     <!-- <d-figure id="svelte-adult-dif-hist-dfigure" class="acc-dif-hist">
       <figure>
@@ -445,6 +494,34 @@
   </d-article>
 
   <d-appendix>
+    <h3 id="attack-algo">Attack Algorithm</h3>
+
+    <p>
+      We use the online model-targeted attack algorithm developed by Suya et al.<d-cite key="suya2021modeltargeted"></d-cite>. Given the clean training set, target model, and model training parameters, the attack algorithm produces a set of poisoning points sequentially by maintaining an intermediate induced model and choosing the point that maximizes the loss difference between the intermediate model and the target model. The selected poisoning point is then added to the current training set and the intermediate model is also updated accordingly by the attacker using the knowledge of the model training process. Importantly, the online attack provides theoretical guarantees about convergence of the induced model to the target model as the number of poisoning points increases. Since we have chosen our target model to misclassify the entire subpopulation, this means we have a guarantee that the online attack process will eventually produce a poisoned training set (which may be huge in size) whose induced model can satisfy the attacker objective.
+    </p>
+
+    <a href="#attack-algo-return">Back to the main text</a>
+
+    <h3 id="attack-algo-theoretical">Attack Algorithm Theoretical Properties</h3>
+
+    <p>
+      We consider a binary prediction task $h : \mathcal{X} \rightarrow \mathcal{Y},$ where $\mathcal{X} \subseteq \mathbb{R}^d$ and $\mathcal{Y} = \{+1, -1\},$ and where the prediction model $h$ is characterized by the model parameters $\theta \in \Theta \subseteq \mathbb{R}^d.$ We denote the non-negative convex loss on a point $(x, y) \in \mathcal{X} \times \mathcal{Y}$ by $l(\theta; x, y)$, and define the loss over a set of points $A$ as $L(\theta; A) = \sum_{(x, y) \in A} l(\theta; x, y)$.
+    </p>
+
+    <p>
+      A useful consequence of using the online attack algorithm is that the rate of convergence is characterized by the loss difference between the target and clean models on the clean dataset. If we define the <em>loss-based distance</em> $D_{l, \mathcal{X}, \mathcal{Y}} : \Theta \times \Theta \rightarrow \mathbb{R}$ between two models $\theta_1, \theta_2$ over a space $\mathcal{X} \times \mathcal{Y}$ with loss function $l(\theta; x, y)$ by
+    </p>
+
+    <d-math style="margin: auto" block>
+      D_{l, \mathcal{X}, \mathcal{Y}}(\theta_1, \theta_2) := \max_{(x, y) \in \mathcal{X} \times \mathcal{Y}} l(\theta_1; x, y) - l(\theta_2; x, y),
+    </d-math>
+
+    <p>
+      then the loss-based distance between the induced model $\theta_{atk}$ and the target model $\theta_p$ correlates to the loss difference $L(\theta_p; \mathcal{D}_c) - L(\theta_c; D_c)$ between $\theta_p$ and the clean model $\theta_c$ on the clean dataset. This fact gives a general heuristic for predicting attack difficulty: the closer a target model is to the clean model as measured by loss difference on the clean dataset (under the same search space of poisoning points), the easier the attack will be. This also justifies the decision to choose a target model with lower loss on the clean dataset.
+    </p>
+
+    <a href="#attack-algo-theoretical-return">Back to the main text</a>
+
     <!-- <h1>Problem Setup</h1>
 
     <p>
@@ -510,24 +587,6 @@
 
     <p>
       We conduct experiments on linear SVM models. The attack method we choose for visualization (details below) requires inputting a target model as attack parameter. The required target model is generated using the label-flipping attack variant described in Koh et al.<d-cite key="koh2018stronger"></d-cite>, which is also used by Suya et al. in their experiments. As opposed to the more general attack settings where adversaries can control both the features and labels of the poisoning points, label-flipping attackers can only change some fraction of the labels of the clean training set. In the variant described by Koh et al., the adversary randomly chooses some fraction of samples from the target subpopulation of the clean training set, flips their labels, and repeats them some number of times to produce the poisoned training set. The target model for our attack method is chosen to be the induced model from this label-flipping attack. More specifically, for each subpopulation, we use the label-flipping attack to generate a collection of candidate classifiers (using different fraction and repetition number) which each achieve 0% accuracy (100% error rate) on the target subpopulation. Afterwards, the classifier with the lowest loss on the clean training set is chosen to be the target model, as done in Suya et al.<d-cite key="suya2021modeltargeted"></d-cite>.
-    </p>
-
-    <h3>Attack Algorithm</h3>
-
-    <p>
-      We use the online model-targeted attack algorithm developed by Suya et al.<d-cite key="suya2021modeltargeted"></d-cite>. Given the clean training set, target model, and model training parameters, the attack algorithm produces a set of poisoning points sequentially by maintaining an intermediate induced model and choosing the point that maximizes the loss difference between the intermediate model and the target model. The selected poisoning point is then added to the current training set and the intermediate model is also updated accordingly by the attacker using the knowledge of the model training process. Importantly, the online attack provides theoretical guarantees about convergence of the induced model to the target model as the number of poisoning points increases. Since we have chosen our target model to misclassify the entire subpopulation, this means we have a guarantee that the online attack process will eventually produce a poisoned training set (which may be huge in size) whose induced model can satisfy the attacker objective.
-    </p>
-
-    <p>
-      A useful consequence of using the online attack algorithm is that the rate of convergence is characterized by the loss difference between the target and clean models on the clean dataset. If we define the <em>loss-based distance</em> $D_{l, \mathcal{X}, \mathcal{Y}} : \Theta \times \Theta \rightarrow \mathbb{R}$ between two models $\theta_1, \theta_2$ over a space $\mathcal{X} \times \mathcal{Y}$ with loss function $l(\theta; x, y)$ by
-    </p>
-
-    <d-math style="margin: auto" block>
-      D_{l, \mathcal{X}, \mathcal{Y}}(\theta_1, \theta_2) := \max_{(x, y) \in \mathcal{X} \times \mathcal{Y}} l(\theta_1; x, y) - l(\theta_2; x, y),
-    </d-math>
-
-    <p>
-      then the loss-based distance between the induced model $\theta_{atk}$ and the target model $\theta_p$ correlates to the loss difference $L(\theta_p; \mathcal{D}_c) - L(\theta_c; D_c)$ between $\theta_p$ and the clean model $\theta_c$ on the clean dataset. This fact gives a general heuristic for predicting attack difficulty: the closer a target model is to the clean model as measured by loss difference on the clean dataset (under the same search space of poisoning points), the easier the attack will be. This also justifies the decision to choose a target model with lower loss on the clean dataset.
     </p>
 
     <p>

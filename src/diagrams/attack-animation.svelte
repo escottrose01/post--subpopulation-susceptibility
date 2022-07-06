@@ -4,6 +4,7 @@
   import * as svgPaths from "../svg-paths.js";
 
   export let initSpIndex;
+  export let links;
   export let data;
   export let fID;
 
@@ -24,7 +25,12 @@
   let waiting = false;
 
   const width = 704;
-  const height = 600;
+  const height = 640;
+
+  const margin = { top: 20, right: 40, bottom: 60, left: 40 };
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
+  const plotHeight = innerHeight - 40;
 
   const render = () => {
     let dset = data.dset;
@@ -43,17 +49,13 @@
       else return 4;
     };
 
-    const margin = { top: 60, right: 40, bottom: 60, left: 40 };
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
-
     let extentX = d3.extent(dset, xValue);
     extentX = [extentX[0] - 0.1, extentX[1] + 0.1];
     const xScale = d3.scaleLinear().domain(extentX).range([0, innerWidth]).nice();
 
     let extentY = d3.extent(dset, yValue);
     extentY = [extentY[0] - 0.1, extentY[1] + 0.1];
-    const yScale = d3.scaleLinear().domain(extentY).range([innerHeight, 0]).nice();
+    const yScale = d3.scaleLinear().domain(extentY).range([plotHeight, 0]).nice();
 
     const shadingG = d3
       .select(svg)
@@ -79,14 +81,14 @@
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const xAxis = d3.axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
+    const xAxis = d3.axisBottom(xScale).tickSize(-plotHeight).tickPadding(15);
     xAxis.tickValues(range(11).map((x, i) => i / 10));
     const yAxis = d3.axisLeft(yScale).tickSize(-innerWidth).tickPadding(10);
     yAxis.tickValues(range(11).map((x, i) => i / 10));
 
     const yAxisG = dsetG.append("g").call(yAxis);
 
-    const xAxisG = dsetG.append("g").call(xAxis).attr("transform", `translate(0,${innerHeight})`);
+    const xAxisG = dsetG.append("g").call(xAxis).attr("transform", `translate(0,${plotHeight})`);
 
     let line = d3
       .line()
@@ -100,7 +102,7 @@
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", innerWidth)
-      .attr("height", innerHeight);
+      .attr("height", plotHeight);
 
     const model_c = modelG
       .append("line")
@@ -257,6 +259,17 @@
       clickHandler();
     });
 
+    if (links) {
+      for (const link of links) {
+        let a = document.getElementById(link[0]);
+        a.onclick = () => {
+          spIndex = -1;
+          hoverIndex = link[1];
+          clickHandler();
+        };
+      }
+    }
+
     updateData();
     updateData(); // probably a bug somewhere, but need to do this twice for highlighting subpops to work for some reason
     updateModels();
@@ -270,27 +283,47 @@
 </script>
 
 <svg bind:this={svg} {width} {height} class="overlay">
-  <text text-anchor="middle" x="50%" y="99%">{poisonIndex} / {nPoisons} Poisons</text></svg
->
+  <text text-anchor="middle" x="50%" y="{margin.top + plotHeight + 50}px">{poisonIndex} / {nPoisons} Poisons</text>
+</svg>
 <canvas bind:this={canvas} {width} {height} />
-<button bind:this={playButton} class="button play-button" style="cursor: pointer">
+<button style="top:{margin.top + plotHeight + 70}px; cursor: pointer" bind:this={playButton} class="button play-button">
   <svg width="10" height="10" viewBox="0 0 10 10">
     <path d={svgPaths.pausePath} fill="#888" />
   </svg>
 </button>
-<button bind:this={stepForwardButton} class="button step-forward-button" style="cursor: pointer">
+<button
+  style="top:{margin.top + plotHeight + 70}px; cursor: pointer"
+  bind:this={stepForwardButton}
+  class="button step-forward-button"
+>
   <svg width="10" height="10" viewBox="0 0 10 10">
     <path d={svgPaths.stepForwardPath} fill="#888" />
   </svg>
 </button>
-<button bind:this={stepBackButton} class="button step-back-button" style="cursor: pointer">
+<button
+  style="top:{margin.top + plotHeight + 70}px; cursor: pointer"
+  bind:this={stepBackButton}
+  class="button step-back-button"
+>
   <svg width="10" height="10" viewBox="0 0 10 10">
     <path d={svgPaths.stepBackPath} fill="#888" />
   </svg>
 </button>
-<button bind:this={resetButton} class="button reset-button" style="cursor: pointer">
+<button
+  style="top:{margin.top + plotHeight + 70}px; cursor: pointer"
+  bind:this={resetButton}
+  class="button reset-button"
+>
   <svg width="12" height="12" viewBox="0 -1 11 10">
     <path d={svgPaths.resetPath} fill="#888" stroke="#888" stroke-width="1" />
   </svg>
 </button>
-<input bind:this={slider} type="range" class="slider attack-slider" min="0" max="1" value="0" />
+<input
+  bind:this={slider}
+  style="top:{margin.top + plotHeight + 70}px;"
+  type="range"
+  class="slider attack-slider"
+  min="0"
+  max="1"
+  value="0"
+/>
