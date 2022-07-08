@@ -25,16 +25,20 @@ d-figure > figure {
   margin-bottom: 20;
 }
 
-d-figure.attackAnim .param-space-acc .acc-dif-hist {
+d-figure.attackAnim .param-space-acc .acc-dif-hist .dif-scatter {
   grid-column: text;
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
-d-figure.acc-dif-hist .tick line {
+d-figure.acc-dif-hist .tick line, d-figure.dif-scatter .tick line {
   visibility: visible;
 }
+
+/* d-figure.dif-scatter .tick line {
+  visibility: visible;
+} */
 
 /* d-figure.param-space-acc {
   grid-column: text;
@@ -171,7 +175,6 @@ d-figure.poison-demo {
   transform: opacity 0.2s;
   left: 80px;
   width: calc(100% - 80px - 80px);
-  top: calc(100%);
 }
 .attack-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -319,18 +322,19 @@ d-figure.poison-demo {
 }
 
 .play-button {
-  top: calc(100% - 2px);
   left: 50px;
 }
 
 .step-forward-button {
-  top: calc(100% - 2px);
   right: calc(50px - 2.5px);
 }
 
 .step-back-button {
-  top: calc(100% - 2px);
   left: calc(50px - 32px);
+}
+
+.reset-button {
+  right: calc(50px - 32px - 2.5px);
 }
 
 .control-button {
@@ -470,7 +474,7 @@ d-figure.poison-demo {
 
 .attack-summary-container {
   overflow-y: auto;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-left: 5px;
   margin-right: 10px;
 }
@@ -524,6 +528,10 @@ d-figure.poison-demo {
   -ms-user-select: none;
   user-select: none;
 } */
+
+.legend {
+  font-size: smaller;
+}
 
 .unselectable {
   -webkit-touch-callout: none;

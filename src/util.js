@@ -1,5 +1,3 @@
-import { mode } from "d3";
-
 export function range(n) {
   return Array(n)
     .fill()
@@ -154,4 +152,9 @@ export function loss(dset, model) {
   }
 
   return l;
+}
+
+export function isInViewport(element) {
+  const rect = element.getBoundingClientRect();
+  return (rect.bottom >= 0 && rect.bottom <= window.innerHeight) || (rect.top >= 0 && rect.top <= window.innerHeight);
 }

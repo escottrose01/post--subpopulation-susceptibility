@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { range, sqrdist, getModelShape } from "../util.js";
+  import { range, sqrdist, getModelShape, isInViewport } from "../util.js";
   import * as svgPaths from "../svg-paths.js";
 
   export let initSpIndex;
@@ -154,7 +154,7 @@
     };
 
     const animStepFrame = () => {
-      if (isPlaying && !waiting) {
+      if (isPlaying && !waiting && isInViewport(canvas)) {
         slider.value = (1 + +slider.value) % (nPoisons + 1);
         sliderHandler(false);
         if (poisonIndex == nPoisons) {
