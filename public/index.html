@@ -709,7 +709,7 @@ d-figure.poison-demo {
     </p>
 
     <p>
-      Synthetic datasets are generated using dataset generation algorithms from Scikit-learn <d-cite key="scikit-learn"></d-cite> and resemble Gaussian mixtures with two components. Each of these datasets is controlled by a set of parameters, which captures different global dataset properties. The first dataset parameter is the class separation parameter $\alpha \ge 0$ which controls the distance between the two class centers. The second dataset parameter is the label noise parameter $\beta \in [0, 1]$ which controls the fraction of points whose labels are randomly assigned. The reason for varying the dataset parameters in our experiments is to determine how properties of the dataset affect poisoning attack difficulty. The synthetic datasets are limited to just two features, so that direct visualizations of the attacks are possible.
+      Synthetic datasets are generated using dataset generation algorithms from Scikit-learn <d-cite key="scikit-learn"></d-cite> and resemble Gaussian mixtures with two components. Each of these datasets is controlled by a set of parameters, which captures different global dataset properties. The first dataset parameter is the class separation parameter $\alpha \ge 0$ which controls the distance between the two class centers. The second dataset parameter is the label noise parameter $\beta \in [0, 1]$ which controls the fraction of points whose labels are randomly assigned. The reason for varying the dataset parameters in our experiments is to determine how properties of the dataset affect poisoning attack difficulty. The synthetic datasets are limited to just two features, so that direct two-dimensional visualizations of the attacks are possible.
     </p>
 
     <d-figure style="text-align: center;" id="datasets">
@@ -722,7 +722,7 @@ d-figure.poison-demo {
     </d-figure>
 
     <p>
-      We also perform poisoning attacks against the UCI Adult dataset <d-cite key="Dua:2019"></d-cite>, which has been used previously in the evaluations of subpopulation poisoning attacks <d-cite key="suya2021modeltargeted, jagielski2021subpopulation"></d-cite>. The Adult dataset is of much higher dimension (57 after data transformations), and so the attack process cannot be visualized directly as in the case of synthetic datasets. The purpose of this dataset is to gauge the attack behavior in a more complicated and practical setting.
+      We also perform poisoning attacks against the UCI Adult dataset <d-cite key="Dua:2019"></d-cite>, which has been used previously in the evaluations of subpopulation poisoning attacks <d-cite key="suya2021modeltargeted, jagielski2021subpopulation"></d-cite>. The Adult dataset is of much higher dimension (57 after data transformations), and so the attack process cannot be visualized directly as in the case of synthetic datasets. The purpose of this dataset is to gauge the attack behavior in a more realistic setting.
     </p>
 
     <h3>Synthetic Dataset Parameter Space</h3>
@@ -936,13 +936,13 @@ d-figure.poison-demo {
     <h1>Adult Dataset</h1>
 
     <p>
-      While the visualizations made possible by the synthetic datasets are useful for developing an intuition for subpopulation poisoning attacks, it is desirable to see how subpopulation susceptibility arises in a more complex and practical setting. For this purpose, we perform subpopulation poisoning attacks against the UCI Adult dataset, whose associated classification task is to determine whether an adult's income exceeds $50,000 per year based on attributes such as education, age, race, martial status, etc.
+      While the visualizations made possible by the synthetic datasets are useful for developing an intuition for subpopulation poisoning attacks, it is desirable to see how subpopulation susceptibility arises in a more complex and practical setting. For this purpose, we perform subpopulation poisoning attacks against the UCI Adult dataset, whose associated classification task is to determine whether an adult's income exceeds $50,000 per year based on attributes such as education, age, race, and martial status.
     </p>
 
     <h3>Subpopulation Formation</h3>
 
     <p>
-      Subpopulations for the Adult dataset are selected using semantic generation. To generate a semantic subpopulation, first a subset of categorical features is selected, and specific values are chosen for those features. For example, the categorical features could be chosen to be "work class" and "education level", and the features' values could then be chosen to be "never worked" and "some college", respectively. Then, every negative-label ("$\le$ 50K") instance in the training set matching all of the (feature, label) pairs is extracted to form the subpopulation. The subpopulations for our experiments are chosen by considering every subset of categorical features and every combination of those features that is present in the training set. For simplicity, we only consider subpopulations with a maximum of three feature selections.
+      Subpopulations for the Adult dataset are selected based on combinations of attributes. To generate a semantic subpopulation, first a subset of categorical features is selected, and specific values are chosen for those features. For example, the categorical features could be chosen to be "work class" and "education level", and the features' values could then be chosen to be "never worked" and "some college", respectively. Then, every negative-label ("$\le$ 50K") instance in the training set matching all of the (feature, label) pairs is extracted to form the subpopulation. The subpopulations for our experiments are chosen by considering every subset of categorical features and every combination of those features that is present in the training set. For simplicity, we only consider subpopulations with a maximum of three feature selections.
     </p>
 
     <p>
@@ -1001,7 +1001,7 @@ d-figure.poison-demo {
     </p>
 
     <p>
-      For a semantic subpopulation with semantic property $P$, let us call the set of all points satisfying $P$ the <em>ambient subpopulation</em> (since it also includes positive-label points), and call the fraction of points in the ambient subpopulation with a positive label the <em>ambient positivity</em> of the subpopulation. In the above attacks, attack difficulty is closely correlated with the ambient positivity of the subpopulation. This makes sense, since positive-label points near the subpopulation work to the advantage of the attacker when attempting to induce misclassification of the negative-label points. Stated in terms of the model-targeted attack, if the clean model classifies the ambient subpopulation as the negative label, then the loss difference between the target and clean models is smaller if there are positive-label points in that region.
+      For a subpopulation with a given property $P$, let us call the set of all points satisfying $P$ the <em>ambient subpopulation</em> (since it also includes positive-label points), and call the fraction of points in the ambient subpopulation with a positive label the <em>ambient positivity</em> of the subpopulation. In the above attacks, attack difficulty is closely correlated with the ambient positivity of the subpopulation. This makes sense, since positive-label points near the subpopulation work to the advantage of the attacker when attempting to induce misclassification of the negative-label points. Stated in terms of the model-targeted attack, if the clean model classifies the ambient subpopulation as the negative label, then the loss difference between the target and clean models is smaller if there are positive-label points in that region.
     </p>
 
     <d-figure id="svelte-adult-comparison1B-dfigure" class="acc-dif-hist">
@@ -1056,7 +1056,7 @@ d-figure.poison-demo {
     <h3>Adult Dataset Summary</h3>
 
     <p>
-      Our experiments demonstrate that poisoning attack difficulty can vary widely for more complex and practical settings. Although we cannot identify all the characteristics that relate to the attack difficulty, we can characterize some of them accurately for certain groups of subpopulations, giving the first attempt in understanding this complicated problem.
+      Our experiments demonstrate that poisoning attack difficulty can vary widely, even in the simple settings we consider. Although we cannot identify all the characteristics that relate to the attack difficulty, we can characterize some of them accurately for certain groups of subpopulations, giving the first attempt in understanding this complicated problem.
     </p>
 
     <!-- <h3>Adult Attack Animation</h3>
@@ -1075,11 +1075,11 @@ d-figure.poison-demo {
     <h1>Discussion</h1>
 
     <p>
-      In this article, we demonstrate that the difficulty of poisoning attacks on subpopulations varies widely, due to the properties of both the dataset and the subpopulation itself. These differences in the attack difficulty, as well as the factors that affect them, can have important consequences in understanding the realistic risks of poisoning attacks.
+      In this article, we visualize and evaluate the effectiveness of poisoning attacks, in both artificial and realistic settings. The difficulty of poisoning attacks on subpopulations varies widely, due to the properties of both the dataset and the subpopulation itself. These differences in the attack difficulty, as well as the factors that affect them, can have important consequences in understanding the realistic risks of poisoning attacks.
     </p>
 
     <p>
-      A natural objection to the analysis in this paper is that the linear SVM is not a sufficiently complex model to produce meaningful results about subpopulation susceptibility. We argue that observations in this paper are still very meaningful: first, simple and low-capacity models are still widely used in practice due to their ease of use, low computational cost and effectiveness <d-cite key="decrema2019progress, tramer2021differentially"></d-cite>, and so our simplified analysis is still relevant in practice. Second, kernel methods are powerful tools to handle non-linearly separable datasets by projecting them into a linearly separable high-dimensional space and are widely adopted in practice. Therefore, if the important spatial relationships among the data points are still preserved after projection, then the same conclusions obtained in our simplified settings still apply to the more complex cases by examining the spatial relationships in the transformed space.
+      Our results are limited to simple settings and a linear SVM model, and it is not yet clear how well they extend to more complex models. However, as a step towards better understanding of poisoning attacks and especially in understanding how attack difficulty varies with subpopulation characteristics, experiments in such a simplified setting are valuable and revealing. Further, simple and low-capacity models are still widely used in practice due to their ease of use, low computational cost and effectiveness <d-cite key="decrema2019progress, tramer2021differentially"></d-cite>, and so our simplified analysis is still relevant in practice. Second, kernel methods are powerful tools to handle non-linearly separable datasets by projecting them into a linearly separable high-dimensional space and are widely adopted in practice. Therefore, if the important spatial relationships among the data points are still preserved after projection, then the same conclusions obtained in our simplified settings still apply to the more complex cases by examining the spatial relationships in the transformed space.
     </p>
 
     <!-- <p>

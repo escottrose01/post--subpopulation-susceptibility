@@ -156,5 +156,5 @@ export function loss(dset, model) {
 
 export function isInViewport(element) {
   const rect = element.getBoundingClientRect();
-  return (rect.bottom >= 0 && rect.bottom <= window.innerHeight) || (rect.top >= 0 && rect.top <= window.innerHeight);
+  return rect.bottom >= 0 && rect.top <= window.innerHeight;
 }
