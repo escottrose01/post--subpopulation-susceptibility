@@ -23,17 +23,20 @@
   let beta = 0.1;
   let seed = 1;
 
-  const width = 704;
-  // const height = 484 + 60;
-  const height = 780;
-  const margin = { top: 40, right: 240, bottom: 360, left: 40 };
+  const width = 1080;
+  // const height = 780;
+  const height = 1582;
+  const scatterHeight = 420;
+  const margin = { top: 40, right: 240, bottom: height - scatterHeight, left: 40 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
+  const scatterWidth = innerHeight + margin.left;
+  const summaryWidth = width - (margin.left + scatterWidth + 21);
 
   const render = () => {
     let extentX = [0.0, 3.0]; // class_sep
     let extentXPad = [extentX[0] - 0.1, extentX[1] + 0.1];
-    const xScale = d3.scaleLinear().domain(extentXPad).range([0, innerWidth]);
+    const xScale = d3.scaleLinear().domain(extentXPad).range([0, scatterWidth]);
 
     let extentY = [0.0, 1.0]; // flip_y
     let extentYPad = [extentY[0] - 0.05, extentY[1] + 0.05];
@@ -60,7 +63,7 @@
       .append("image")
       .attr("href", `images/${key}-contour.png`)
       .attr("transform", `translate(${margin.left},${margin.top})`)
-      .attr("width", innerWidth)
+      .attr("width", scatterWidth)
       .attr("height", innerHeight)
       .attr("preserveAspectRatio", "none");
 
@@ -69,7 +72,7 @@
       .attr("class", "fig-title")
       .attr("text-anchor", "middle")
       .attr("alignment-baseline", "baseline")
-      .attr("x", innerWidth / 2 + margin.left)
+      .attr("x", scatterWidth / 2 + margin.left)
       .attr("y", (2 * margin.top) / 3)
       .text(config.title);
 
@@ -79,11 +82,11 @@
       .append("text")
       .attr("class", "fig-label-text")
       .attr("text-anchor", "middle")
-      .attr("x", innerWidth / 2 + margin.left)
+      .attr("x", scatterWidth / 2 + margin.left)
       .attr("y", innerHeight + margin.top + 35)
       .text("Class separation α");
 
-    const yAxis = d3.axisLeft(yScale).tickSize(-innerWidth).tickPadding(10);
+    const yAxis = d3.axisLeft(yScale).tickSize(-scatterWidth).tickPadding(10);
     yAxis.tickValues(range(6).map((x, i) => i / 5));
     d3.select(svg)
       .append("text")
@@ -116,11 +119,11 @@
 
     const scatterExtent = d3.extent(scatterPoints, (d) => d.v);
     const color = d3.scaleSequential(d3.interpolateViridis).domain(scatterExtent.reverse()).nice();
-    const colorScale = d3.scaleLinear().domain(scatterExtent.reverse()).range([0, innerWidth]).nice();
+    const colorScale = d3.scaleLinear().domain(scatterExtent.reverse()).range([0, scatterWidth]).nice();
 
     scaleG
       .append("image")
-      .attr("width", innerWidth)
+      .attr("width", scatterWidth)
       .attr("height", 20)
       .attr("preserveAspectRatio", "none")
       .attr("style", "outline: 1px solid black;")
@@ -224,9 +227,9 @@
 
 <svg bind:this={svg} {width} {height} class="overlay">
   <rect
-    x={width - margin.right + 20}
+    x={margin.left + scatterWidth + 20}
     y={margin.top}
-    width={margin.right - 40}
+    width={summaryWidth}
     height={innerHeight + 80}
     fill="white"
     stroke="#d3d3d3"
@@ -234,9 +237,9 @@
     rx="5"
   />
   <rect
-    x={width - margin.right + 80}
+    x={width - summaryWidth / 2 - 50}
     y={margin.top - 5}
-    width={margin.right - 160}
+    width={100}
     height={10}
     fill="white"
     stroke-width="0"
@@ -263,21 +266,22 @@
     border="none"
   />
 </svg>
-<div class="overlay" style="left: {margin.left}; top: {margin.top}; width:{innerWidth}px; height:{innerHeight}px;">
+<div class="overlay" style="left: {margin.left}; top: {margin.top}; width:{scatterWidth}px; height:{innerHeight}px;">
   <image src="/images/accuracy-contour.png" />
 </div>
 <div
   class="overlay"
-  style="left: {width - margin.right + 20}px; width:{margin.right - 40}px; top:{-12.5 - 5 + margin.top}px;"
+  style="left: {width - summaryWidth / 2 - 35}px; width:{margin.right - 40}px; top:{-12.5 - 5 + margin.top}px;"
 >
   <p class="unselectable" style="font-size: large; margin:0px; line-height:30px">Datasets</p>
 </div>
 <div
   class="summary-box-container"
-  style="left: {width - margin.right + 20}px; top:{margin.top}px; width:{margin.right - 40}px; height:{innerHeight +
-    80}px;"
+  style="left: {margin.left + scatterWidth + 20}px; top:{margin.top}px; width:{summaryWidth -
+    10}px; height:{innerHeight + 80}px;"
 >
-  <div bind:this={datasetViewer} class="summary-box-scrollarea">
+  <div bind:this={datasetViewer} class="summary-box-area" style="width:100%; justify-content:center;">
+    <input class="summary-box-entry" type="image" alt="" />
     <input class="summary-box-entry" type="image" alt="" />
     <input class="summary-box-entry" type="image" alt="" />
     <input class="summary-box-entry" type="image" alt="" />
@@ -292,7 +296,7 @@
 
 <div
   class="overlay"
-  style="left: {margin.left}px; width:{width - margin.left - 20}px; top:{-12.5 - 5 + innerHeight + margin.top + 130}px;"
+  style="left: {width / 2 - 20}px; width:{margin.right - 40}px; top:{-12.5 - 5 + innerHeight + margin.top + 130}px;"
 >
   <p class="unselectable" style="font-size: large; margin:0px; line-height:30px">Attacks</p>
 </div>
@@ -302,7 +306,7 @@
     margin.left -
     20}px;"
 >
-  <div bind:this={attackViewer} class="attack-summary-container" style="height:100%;">
+  <div bind:this={attackViewer} class="attack-summary-container" style="height:100%; justify-content:center;">
     <img class="item" alt="" />
     <img class="item" alt="" />
     <img class="item" alt="" />

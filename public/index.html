@@ -32,7 +32,7 @@ d-figure > figure {
 }
 
 d-figure.attackAnim .param-space-acc .acc-dif-hist .dif-scatter {
-  grid-column: text;
+  /* grid-column: text; */
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -463,34 +463,41 @@ d-figure.poison-demo {
   pointer-events: visible;
 }
 
-.summary-box-scrollarea {
-  overflow-y: auto;
-  overflow-x: hidden;
+.summary-box-area {
+  /* overflow-y: auto; */
+  /* overflow-x: hidden; */
   margin: 10px;
-  width: calc(100% - 20px);
-  height: calc(100% - 20px);
+  display:flex;
+  flex-wrap: wrap;
+  /* width: calc(100% - 20px); */
+  /* height: calc(100% - 20px); */
 }
 
 .summary-box-entry {
-  margin-right: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
   display: block;
   padding:0px;
-  width:calc(100% - 5px);
+  width:calc(25% - 10px);
+  /* height:calc(25%); */
 }
 
 .attack-summary-container {
-  overflow-y: auto;
+  /* overflow-y: auto; */
   margin-top: 10px;
-  margin-left: 5px;
-  margin-right: 10px;
+  margin-left:10px;
+  display: flex;
+  flex-wrap: wrap;
+  /* margin-left: 5px; */
+  /* margin-right: 10px; */
 }
   
 .attack-summary-container .item {
   display: block;
   float: left;
-  margin-right: 5px;
+  margin-right: 10px;
   margin-bottom: 10px;
-  width: calc(33% - 5px);
+  width: calc(25% - 10px);
   height: auto;
 }
 
@@ -735,9 +742,10 @@ d-figure.poison-demo {
       We use linear SVM models for our experiments. Before conducting the poisoning attacks against the subpopulations, let’s observe the behavior of the clean models trained on each combination of the dataset parameters:
     </p>
 
-    <d-figure id="svelte-param-space-acc-dfigure" class="param-space-acc">
+    <d-figure id="svelte-param-space-acc-dfigure" class="l-page-outset">
       <figure>
-        <div id="svelte-param-space-acc-target" style="pointer-events: none; text-align: center;"></div>
+        <!-- <div id="svelte-param-space-acc-target" style="pointer-events: none; text-align: center;"></div> -->
+        <div id="svelte-param-space-acc-target" style="pointer-events: none; margin:auto"></div>
         <figcaption>
           The clean model performance can be affected by the dataset parameters: as the two classes are more separated and less noisy, the clean models achieve higher test accuracy. Click points on the plot to see the datasets generated with each parameter combination.
         </figcaption>
@@ -841,9 +849,9 @@ d-figure.poison-demo {
       As mentioned earlier, the properties that apply to the above two datasets should also apply to all other datasets with either close class centers or high label noise. We can demonstrate this empirically by looking at the mean attack difficulty over the entire grid of the dataset parameters, where we describe the difficulty of an attack against a dataset of $n$ training samples that uses $p$ poisoning points using the ratio $p/n$. That is, the difficulty of an attack is the fraction of poisoning points added relative to the size of the original clean training set to achieve the attacker goal.
     </p>
 
-    <d-figure id="svelte-param-space-dif-dfigure" class="param-space-acc">
+    <d-figure id="svelte-param-space-dif-dfigure" class="l-page-outset">
       <figure>
-        <div id="svelte-param-space-dif-target" style="pointer-events: none; text-align: center;"></div>
+        <div id="svelte-param-space-dif-target" style="pointer-events: none; margin:auto;"></div>
         <figcaption>Average attack difficulty is roughly characterized by clean model accuracy, with more accurate models corresponding to more difficult attacks. Click points on the plot to see different dataset parameter combinations, or click datasets on the right to see specific attacks.</figcaption>
       </figure>
     </d-figure>
