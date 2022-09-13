@@ -104,16 +104,23 @@
       .attr("width", innerWidth)
       .attr("height", plotHeight);
 
-    const model_c = modelG
+    const modelC = modelG
       .append("line")
       .style("stroke", "darkgray")
       .style("stroke-width", 5)
       .attr("clip-path", `url(#rect-clip${fID})`);
 
-    const model_t = modelG
+    const modelP = modelG
       .append("line")
       .style("stroke", "black")
       .style("stroke-width", 5)
+      .attr("clip-path", `url(#rect-clip${fID})`);
+
+    const modelT = modelG
+      .append("line")
+      .style("stroke", "rgba(0, 0, 0, 0.5)")
+      .style("stroke-width", 5)
+      .style("stroke-dasharray", "4 4")
       .attr("clip-path", `url(#rect-clip${fID})`);
 
     const belowArea = shadingG.append("path").attr("clip-path", `url(#rect-clip${fID})`);
@@ -167,24 +174,32 @@
 
     const updateModels = () => {
       let modelShape;
-      let theta_c = data.attacks[spIndex].im_models[0];
-      let theta_t = data.attacks[spIndex].im_models[poisonIndex];
+      let thetaC = data.attacks[spIndex].im_models[0];
+      let thetaP = data.attacks[spIndex].im_models[poisonIndex];
+      let thetaT = hoverIndex === -1 ? data.attacks[spIndex].target_model : data.attacks[hoverIndex].target_model;
 
-      modelShape = getModelShape(theta_c, extentX, extentY);
-      model_c
+      modelShape = getModelShape(thetaC, extentX, extentY);
+      modelC
         .attr("x1", xScale(modelShape.boundary[0][0]))
         .attr("x2", xScale(modelShape.boundary[1][0]))
         .attr("y1", yScale(modelShape.boundary[0][1]))
         .attr("y2", yScale(modelShape.boundary[1][1]));
 
-      modelShape = getModelShape(theta_t, extentX, extentY);
-      model_t
+      modelShape = getModelShape(thetaP, extentX, extentY);
+      modelP
         .attr("x1", xScale(modelShape.boundary[0][0]))
         .attr("x2", xScale(modelShape.boundary[1][0]))
         .attr("y1", yScale(modelShape.boundary[0][1]))
         .attr("y2", yScale(modelShape.boundary[1][1]));
-      belowArea.attr("d", line(modelShape.below)).attr("class", theta_t[1] < 0 ? "area-blue" : "area-red");
-      aboveArea.attr("d", line(modelShape.above)).attr("class", theta_t[1] < 0 ? "area-red" : "area-blue");
+      belowArea.attr("d", line(modelShape.below)).attr("class", thetaP[1] < 0 ? "area-blue" : "area-red");
+      aboveArea.attr("d", line(modelShape.above)).attr("class", thetaP[1] < 0 ? "area-red" : "area-blue");
+
+      modelShape = getModelShape(thetaT, extentX, extentY);
+      modelT
+        .attr("x1", xScale(modelShape.boundary[0][0]))
+        .attr("x2", xScale(modelShape.boundary[1][0]))
+        .attr("y1", yScale(modelShape.boundary[0][1]))
+        .attr("y2", yScale(modelShape.boundary[1][1]));
     };
 
     const updateData = () => {
@@ -211,6 +226,7 @@
       hoverIndex = delaunay.find(x, y, spIndex);
       if (sqrdist(data.cluster_centers[hoverIndex], [x, y]) > 0.05) hoverIndex = -1;
       updateClasses();
+      updateModels();
     };
 
     const clickHandler = (event) => {
