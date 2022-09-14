@@ -13,7 +13,7 @@
   let slider;
   let playButton;
   let stepForwardButton, stepBackButton;
-  let resetButton;
+  let resetButton, restartButton;
 
   let spIndex = initSpIndex;
   let hoverIndex = -1;
@@ -274,6 +274,10 @@
       hoverIndex = initSpIndex;
       clickHandler();
     });
+    d3.select(restartButton).on("click", () => {
+      slider.value = 0;
+      sliderHandler(false);
+    });
 
     if (links) {
       for (const link of links) {
@@ -325,7 +329,7 @@
     <path d={svgPaths.stepBackPath} fill="#888" />
   </svg>
 </button>
-<button
+<!-- <button
   style="top:{margin.top + plotHeight + 70}px; cursor: pointer"
   bind:this={resetButton}
   class="button reset-button"
@@ -333,6 +337,26 @@
   <svg width="12" height="12" viewBox="0 -1 11 10">
     <path d={svgPaths.resetPath} fill="#888" stroke="#888" stroke-width="1" />
   </svg>
+</button> -->
+<button
+  style="top:{margin.top + plotHeight + 70}px; cursor: pointer"
+  bind:this={resetButton}
+  class="button reset-button"
+>
+  Reset
+</button>
+<button
+  style="top:{margin.top + plotHeight + 70}px; cursor: pointer"
+  bind:this={restartButton}
+  class="button restart-button"
+>
+  <svg width="12" height="12" viewBox="0 -1 11 10">
+    <path d={svgPaths.resetPath} fill="#888" stroke="#888" stroke-width="1" />
+  </svg>
+  <!-- <input id="seedButton" type="button" class="button seed-button" value="Randomize Dataset" /> -->
+  <!-- <svg width="120" height="24" viewBox="0 -1 11 10">
+    <text>Restart</text>
+  </svg> -->
 </button>
 <input
   bind:this={slider}
