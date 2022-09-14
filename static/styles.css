@@ -482,6 +482,9 @@ d-figure.poison-demo {
   margin-left:10px;
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  /* row-gap: 0px; */
   /* margin-left: 5px; */
   /* margin-right: 10px; */
 }
