@@ -29,7 +29,7 @@
       .domain([0, d3.max(data.loss_diffs, (d) => d)])
       .nice();
 
-    const color = d3.scaleOrdinal().domain(features).range(["#95c623", "#db9624", "#c64a23"]);
+    const color = d3.scaleOrdinal().domain(features).range(["#88981b", "#db9624", "#c64a23"]);
 
     let chartG = d3.select(svg).append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
