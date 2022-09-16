@@ -163,32 +163,16 @@ const figureParams = [
 }
 
 {
-  const figure = document.getElementById("svelte-adult-comparison1A-dfigure");
+  const figure = document.getElementById("svelte-adult-comparison1-dfigure");
   let chart;
   figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/adult-comparison1.json")
+    fetch("data/adult-comparison1.json")
       .then((resp) => resp.json())
       .then((dataJson) => {
-        const target = figure.querySelector("#svelte-adult-comparison1A-target");
-        chart = new AdultComparison({
-          target: target,
-          props: { data: dataJson },
-        });
-      });
-  });
-}
-
-{
-  const figure = document.getElementById("svelte-adult-comparison1B-dfigure");
-  let chart;
-  figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/adult-comparison1.json")
-      .then((resp) => resp.json())
-      .then((dataJson) => {
-        const target = figure.querySelector("#svelte-adult-comparison1B-target");
+        const target = figure.querySelector("#svelte-adult-comparison1-target");
         chart = new AdultPositivity({
           target: target,
-          props: { data: dataJson },
+          props: { data: dataJson, title: "Adult Dataset Attack Difficulty" },
         });
       });
   });
@@ -198,7 +182,7 @@ const figureParams = [
   const figure = document.getElementById("svelte-adult-comparison2-dfigure");
   let chart;
   figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/adult-comparison2.json")
+    fetch("data/adult-comparison2.json")
       .then((resp) => resp.json())
       .then((dataJson) => {
         const target = figure.querySelector("#svelte-adult-comparison2-target");
@@ -214,7 +198,7 @@ const figureParams = [
   const figure = document.getElementById("svelte-adult-comparison3-dfigure");
   let chart;
   figure.addEventListener("ready", () => {
-    fetch("https://escottrose01.github.io/poisoning-data/adult-comparison3.json")
+    fetch("data/adult-comparison3.json")
       .then((resp) => resp.json())
       .then((dataJson) => {
         const target = figure.querySelector("#svelte-adult-comparison3-target");

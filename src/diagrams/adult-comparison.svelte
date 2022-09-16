@@ -33,7 +33,7 @@
       .attr("y", (d) => yScale(d))
       .attr("width", xScale.bandwidth())
       .attr("height", (d) => innerHeight - yScale(d))
-      .attr("fill", "steelblue");
+      .attr("fill", "#c64a23");
 
     let xAxisG = chartG.append("g").call(xAxis).attr("transform", `translate(0,${innerHeight})`);
     let yAxisG = chartG.append("g").call(d3.axisLeft(yScale));

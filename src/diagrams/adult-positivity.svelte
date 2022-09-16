@@ -12,10 +12,10 @@
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
-  const features = ["Ambient Positivity", "Model Loss Difference"];
+  const features = ["Ambient Positivity", "Model Loss Difference", "Difficulty"];
 
   const render = () => {
-    let xScale0 = d3.scaleBand().domain(data.descriptions).range([0, innerWidth]).padding(0.4);
+    let xScale0 = d3.scaleBand().domain(data.descriptions).range([0, innerWidth]).padding(0.2);
     let xScale1 = d3.scaleBand().domain(features).range([0, xScale0.bandwidth()]);
 
     let yScaleLeft = d3
@@ -29,7 +29,7 @@
       .domain([0, d3.max(data.loss_diffs, (d) => d)])
       .nice();
 
-    const color = d3.scaleOrdinal().domain(features).range(["steelblue", "#ff7f00"]);
+    const color = d3.scaleOrdinal().domain(features).range(["#95c623", "#db9624", "#c64a23"]);
 
     let chartG = d3.select(svg).append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -42,7 +42,7 @@
       .append("rect")
       .attr("x", (d, i) => xScale0(data.descriptions[i]) + xScale1("Ambient Positivity"))
       .attr("y", (d) => yScaleLeft(d))
-      .attr("width", xScale0.bandwidth() / 2)
+      .attr("width", xScale0.bandwidth() / 3)
       .attr("height", (d) => innerHeight - yScaleLeft(d))
       .attr("fill", color("Ambient Positivity"));
 
@@ -53,9 +53,20 @@
       .append("rect")
       .attr("x", (d, i) => xScale0(data.descriptions[i]) + xScale1("Model Loss Difference"))
       .attr("y", (d) => yScaleRight(d))
-      .attr("width", xScale0.bandwidth() / 2)
+      .attr("width", xScale0.bandwidth() / 3)
       .attr("height", (d) => innerHeight - yScaleRight(d))
       .attr("fill", color("Model Loss Difference"));
+
+    chartG
+      .selectAll("mybar")
+      .data(data.difficulties)
+      .enter()
+      .append("rect")
+      .attr("x", (d, i) => xScale0(data.descriptions[i]) + xScale1("Difficulty"))
+      .attr("y", (d) => yScaleRight(d))
+      .attr("width", xScale0.bandwidth() / 3)
+      .attr("height", (d) => innerHeight - yScaleRight(d))
+      .attr("fill", color("Difficulty"));
 
     let xAxisG = chartG.append("g").call(xAxis).attr("transform", `translate(0,${innerHeight})`);
     let yAxisGLeft = chartG.append("g").call(d3.axisLeft(yScaleLeft));
@@ -94,7 +105,7 @@
       .attr("transform", "rotate(90)")
       .attr("y", -margin.left - innerWidth - 40)
       .attr("x", margin.top + innerHeight / 2)
-      .text("Loss Difference");
+      .text("Loss Difference / Difficulty");
 
     let legend = d3
       .select(svg)

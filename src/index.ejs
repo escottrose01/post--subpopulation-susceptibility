@@ -402,10 +402,10 @@
       To start, we compare a few attacks from our experiments on the Adult dataset.
     </p>
 
-    <d-figure id="svelte-adult-comparison1A-dfigure" class="acc-dif-hist">
+    <d-figure id="svelte-adult-comparison1-dfigure" class="acc-dif-hist">
       <figure>
-        <div id="svelte-adult-comparison1A-target" style="pointer-events: none; text-align: center;"></div>
-        <figcaption>How do semantic properties of a subpopulation affect attack difficulty? All of the above subpopulations are of similar sizes and are classified with 100% accuracy by the clean model.</figcaption>
+        <div id="svelte-adult-comparison1-target" style="pointer-events: none; text-align: center;"></div>
+        <figcaption>In some cases, ambient positivity is an indicator of the attack difficulty, especially if it relates to the loss difference (on clean training data) between the clean and the target models.</figcaption>
       </figure>
     </d-figure>
 
@@ -416,13 +416,6 @@
     <p>
       For a subpopulation with a given property $P$, let us call the set of all points satisfying $P$ the <em>ambient subpopulation</em> (since it also includes positive-label points), and call the fraction of points in the ambient subpopulation with a positive label the <em>ambient positivity</em> of the subpopulation. In the above attacks, attack difficulty is negatively correlated with the ambient positivity of the subpopulation. This makes sense, since positive-label points near the subpopulation work to the advantage of the attacker when attempting to induce misclassification of the negative-label points. Stated in terms of the model-targeted attack, if the clean model classifies the ambient subpopulation as the negative label, then the loss difference between the target and clean models is smaller if there are positive-label points in that region.
     </p>
-
-    <d-figure id="svelte-adult-comparison1B-dfigure" class="acc-dif-hist">
-      <figure>
-        <div id="svelte-adult-comparison1B-target" style="pointer-events: none; text-align: center;"></div>
-        <figcaption>In some cases, ambient positivity is an indicator of the attack difficulty, especially if it relates to the loss difference (on clean training data) between the clean and the target models.</figcaption>
-      </figure>
-    </d-figure>
 
     <p>
       But does the ambient positivity of a subpopulation necessarily determine attack difficulty for otherwise similar subpopulations? If we restrict our view to subpopulations with similar pre-poisoning ambient positivity (e.g., between 0.2 and 0.3), we still find a significant spread of attack difficulties:
