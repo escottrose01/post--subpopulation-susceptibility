@@ -560,6 +560,7 @@ d-figure.poison-demo {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  pointer-events: none;
 }
 
 .demo-stats-text {

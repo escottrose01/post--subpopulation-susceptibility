@@ -2,10 +2,10 @@
   import { onMount } from "svelte";
 
   export let data;
-  export let fID;
 
   let svg;
   let selectButton;
+  let scatterCanvas;
 
   const width = 704;
   const height = 584;
@@ -27,6 +27,28 @@
 
   let xAxisLabel;
   let titleLabel;
+
+  let context;
+
+  const drawPoint = (point, pointColor, ix) => {
+    context.beginPath();
+    context.fillStyle = pointColor;
+
+    context.arc(xScale(point[ix]), yScale(point[difIx]), 2.5, 0, 2 * Math.PI, true);
+    context.fill();
+  };
+
+  const draw = (ix) => {
+    context.clearRect(0, 0, innerWidth, innerHeight);
+    context.fillStyle = "steelblue";
+    context.strokeWidth = 1;
+    context.strokeStyle = "white";
+    context.globalAlpha = 0.2;
+
+    data.forEach((point) => {
+      drawPoint(point, "steelBlue", ix);
+    });
+  };
 
   const update = (choice) => {
     let ix;
@@ -56,12 +78,10 @@
     }
 
     let extentX = d3.extent(data, (d) => d[ix]);
+    extentX = [extentX[0] - 0.005, extentX[1] + 0.005];
     xScale = d3.scaleLinear().domain(extentX).range([0, innerWidth]);
 
-    scatterG
-      .selectAll("circle")
-      .data(data)
-      .attr("cx", (d) => xScale(d[ix]));
+    draw(ix);
 
     let xAxis = d3.axisBottom(xScale).tickPadding(15);
     xAxisG.transition().duration(800).call(xAxis);
@@ -69,7 +89,9 @@
 
   const render = () => {
     let extentX = d3.extent(data, (d) => d[0]);
+    extentX = [extentX[0] - 0.005, extentX[1] + 0.005];
     let extentY = d3.extent(data, (d) => d[difIx]);
+    extentY = [0, extentY[1] + 0.001];
     xScale = d3.scaleLinear().domain(extentX).range([0, innerWidth]);
     yScale = d3.scaleLinear().domain(extentY).range([innerHeight, 0]).nice();
 
@@ -77,26 +99,10 @@
 
     const xAxis = d3.axisBottom(xScale).tickPadding(15);
 
-    scatterG
-      .append("clipPath")
-      .attr("id", `rect-clip${fID}`)
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", innerWidth + 10)
-      .attr("height", innerHeight);
-
-    scatterG
-      .selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", (d) => xScale(d[0]))
-      .attr("cy", (d) => yScale(d[difIx]))
-      .attr("opacity", 0.05)
-      .attr("fill", "steelblue")
-      .attr("r", 4)
-      .attr("clip-path", `url(#rect-clip${fID})`);
+    d3.select(scatterCanvas)
+      .attr("width", innerWidth)
+      .attr("height", innerHeight)
+      .attr("style", `left: ${margin.left}px; top: ${margin.top}px;`);
 
     xAxisG = scatterG.append("g").call(xAxis).attr("transform", `translate(0,${innerHeight})`);
     yAxisG = scatterG.append("g").call(d3.axisLeft(yScale));
@@ -126,6 +132,10 @@
       .attr("x", -margin.top - innerHeight / 2)
       .text("Difficulty");
 
+    context = scatterCanvas.getContext("2d");
+
+    draw(0);
+
     d3.select(selectButton).on("change", () => {
       let selectedOption = selectButton.options[selectButton.selectedIndex].text;
       update(selectedOption);
@@ -145,3 +155,4 @@
 </select>
 <svg bind:this={svg} {width} {height} class="overlay unselectable" style="pointer-events: none;" />
 <canvas class="unselectable" {width} {height} />
+<canvas bind:this={scatterCanvas} class="overlay unselectable" />
